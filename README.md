@@ -138,3 +138,10 @@ ownerUserId: string
 ```
 
 
+# UI not included - please consider contributing one!
+The current version of the duplicator service only includes a REST API. You will also need a way to call those API endpoints.  
+If you are a good UI designer and create a stand-alone user interface on top of the duplicator service - please consider open sourcing it.  
+  
+Another interesting option would be to integrate a feature like this in alternate Qlik Sense hubs such as Axis' [Simple Hub](http://viz.axisgroup.com/simple-hub/) or [Combined Hub](http://viz.axisgroup.com/combined-hub/)  
+(both part of their [RxQAP](https://github.com/axisgroup/RxQAP) library), or [Stefan's Sense custom hub](https://github.com/countnazgul/sense-custom-hub). 
+Both could probably be very nicely adapted to work with the duplicator service.
