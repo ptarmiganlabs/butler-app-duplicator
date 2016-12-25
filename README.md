@@ -138,6 +138,3 @@ ownerUserId: string
 ```
 
 
-## Trying to create a new app based on an app that is not a designated template app
-
-
