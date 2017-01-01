@@ -66,6 +66,9 @@ var restServer = restify.createServer({
 // Enable parsing of http parameters
 restServer.use(restify.queryParser());
 
+// Set up CORS handling
+restServer.use( restify.CORS( {origins: ['*']}) );
+
 // Set up endpoints for REST server
 restServer.get('/duplicateNewScript', respondDuplicateNewScript);
 restServer.get('/duplicateKeepScript', respondDuplicateKeepScript);
