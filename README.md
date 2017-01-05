@@ -60,7 +60,7 @@ Standard curl is used below, the assumption is that the command is executed on t
 curl -X GET "http://localhost:8000/getTemplateList"
 ```
 
-Returns a HTTP 200 response, with a json structure such as
+Returns a HTTP 200 response, with a JSON structure such as
 
 ```json
 [{
@@ -91,12 +91,22 @@ Returns
 ```
 HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 22
-Date: Thu, 22 Dec 2016 07:35:28 GMT
+Content-Length: 83
+Date: Thu, 05 Jan 2017 22:28:08 GMT
 Connection: close
 
-"Done duplicating app"
+{"result":"Done duplicating app","newAppId":"794e4003-aa89-4a4e-9120-7eb4d6314a32"}
 ```
+
+I.e. the JSON structure is  
+
+```json
+{
+    "result": "Done duplicating app",
+    "newAppId":"794e4003-aa89-4a4e-9120-7eb4d6314a32"
+}
+```
+
 
 
 ### Query Parameters
@@ -117,17 +127,7 @@ The new app will be reloaded (using the load script from the template app) befor
 curl -X GET "http://localhost:8000/duplicateKeepScript?appName=My%20new%20app&templateAppId=11111111-2222-3333-4444-555555555555&ownerUserId=joe"
 ```
 
-Returns
-
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
-Content-Length: 22
-Date: Thu, 22 Dec 2016 07:35:28 GMT
-Connection: close
-
-"Done duplicating app"
-```
+The response from the service is exactly the same as for the /duplicateNewScript endpoint (see above).  
 
 
 ### Query Parameters
