@@ -241,8 +241,9 @@ function respondDuplicateNewScript(req, res, next) {
                                 return globalEngine.connection.close();
                             })
                             .then(() => {
-                                logger.log('info', 'Done duplicating');
-                                res.send('Done duplicating app');
+                                logger.log('info', 'Done duplicating, new app id=' + newAppId);
+                                var jsonResult = {result:"Done duplicating app", newAppId:newAppId }
+                                res.send(jsonResult);
                                 next();
                             })
                             .catch(err => {
@@ -384,8 +385,9 @@ function respondDuplicateKeepScript(req, res, next) {
                                 return globalEngine.connection.close();
                             })
                             .then(() => {
-                                logger.log('info', 'Done duplicating');
-                                res.send('Done duplicating app');
+                                logger.log('info', 'Done duplicating, new app id=' + newAppId);
+                                var jsonResult = {result:"Done duplicating app", newAppId:newAppId }
+                                res.send(jsonResult);
                                 next();
                             })
                             .catch(err => {
