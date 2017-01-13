@@ -45,6 +45,7 @@ By instantiating new apps from template apps (that follow the coding standards),
 * When new apps are created, their reload scripts are either left intact, or replaced with a new script (there are two different REST endpoints for this).  
 If the script is replaced, the new script is retrieved from a URL - typically from a revision control system system such as Github.  
 * Create a custom property (by using the Sense QMC) called "AppIsTemplate". It should only exist for Apps. Possible values should be "Yes" and "No".
+* As of version 1.1.0, the app duplicator only works using https. It's a bit more work setting up, but security is important. No shortcuts.
 
 
 # Usage
@@ -57,7 +58,7 @@ You can use any tool capable of creating REST calls to test the service, includi
 Standard curl is used below, the assumption is that the command is executed on the same server where the app duplicator service is running.
 
 ```sh
-curl -X GET "http://localhost:8000/getTemplateList"
+curl -X GET "https://localhost:8000/getTemplateList"
 ```
 
 Returns a HTTP 200 response, with a JSON structure such as
@@ -83,7 +84,7 @@ When creating a new app that should get its load script from the file specified 
 The new app will be reloaded (using the new load script) before saved to disk.
   
 ```sh
-curl -X GET "http://localhost:8000/duplicateNewScript?appName=My%20new%20app&templateAppId=11111111-2222-3333-4444-555555555555&ownerUserId=joe"
+curl -X GET "https://localhost:8000/duplicateNewScript?appName=My%20new%20app&templateAppId=11111111-2222-3333-4444-555555555555&ownerUserId=joe"
 ```
 
 Returns
@@ -124,7 +125,7 @@ The new app will be reloaded (using the load script from the template app) befor
 
 
 ```sh
-curl -X GET "http://localhost:8000/duplicateKeepScript?appName=My%20new%20app&templateAppId=11111111-2222-3333-4444-555555555555&ownerUserId=joe"
+curl -X GET "https://localhost:8000/duplicateKeepScript?appName=My%20new%20app&templateAppId=11111111-2222-3333-4444-555555555555&ownerUserId=joe"
 ```
 
 The response from the service is exactly the same as for the /duplicateNewScript endpoint (see above).  
