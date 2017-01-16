@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	
+	<link rel="shortcut icon" type="image/png" href="favicon.png">
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" href="./css/font-awesome.min.css">
+	<link rel="stylesheet" href="./css/ionicons.min.css">
+	<link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
+	<link rel="stylesheet" type="text/css" href="./css/duplicate-app.css">
+
+
+	<script src="./js/jquery-2.1.0.min.js"></script>
+	<script src="./js/bootstrap.min.js"></script>
+
+	<title>Create app from template</title>
+
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script src="https://cdn.jsdelivr.net/vee-validate/2.0.0-beta.18/vee-validate.min.js"></script>
+	<script>
+		Vue.use(VeeValidate); // Set up Vue validator
+	</script>
+
+	<!-- Google Analytics -->
+	<!-- Google Analytics END -->
+</head>
+
+<body>
+	<!--Feedback link-->
+	<div class="feedback-banner">
+		<div class="feedback-banner__message">
+        	<a href="https://github.com/mountaindude/sense-template-app-duplicate/issues/new" target="_blank" class="feedback-banner__sub-message">Give feedback</a>
+		</div>
+	</div>
+	<!--Feedback link END-->
+
+
+
+	<!-- Main container -->
+	<div class="page-container">
+		<div class="bloc l-bloc bgc-white" id="bloc-0">
+			<div class="container bloc-sm">
+				<nav class="navbar row">
+					<div class="navbar-header">
+						<a class="navbar-brand" href="index.html"><img src="img/qliksense1.png" alt="logo" width="44" />Qlik Sense app duplicator</a>
+						<button id="nav-toggle" type="button" class="ui-navbar-toggle navbar-toggle" data-toggle="collapse" data-target=".navbar-1">
+					<span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+				</button>
+					</div>
+					<div class="collapse navbar-collapse navbar-1">
+						<ul class="site-navigation nav navbar-nav">
+							<li>
+							</li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+		</div>
+		<!-- app -->
+		<div class="bloc l-bloc bgc-white " id="app">
+			<div class="container bloc-lg b-divider">
+				<div class="row">
+					<div class="col-sm-4">
+						<h3 class="mg-md">
+							<span class="ion ion-information-circled icon-sm"></span> Instructions
+						</h3>
+						<p>
+							1. Select the template you want to use. <br>2. Enter the name of the new app. <br>3. Enter the owner (username) of
+							the new app.<br>4. Click the “Create app” button. <br> <br>An app will be created for you, using the selected template.
+							The new app will be reloaded, and then appear in the “My Work” area of the Hub.
+						</p>
+					</div>
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label for="template">Select template</label>
+							<select v-model="selected" class="form-control inputfields" id="template">
+					<option v-for="option in options" v-bind:value="{appId: option.value, description: option.description}">
+						{{ option.text }}
+					</option>
+					</select>
+						</div>
+						<div class="form-group">
+							<label for="app_name">Name of new app</label>
+							<input v-model="newAppName" class="form-control inputfields" v-validate data-vv-rules="required|min:3" data-vv-as="app name"
+											name="app_name" placeholder="" id="app_name" />
+							<span v-show="errors.has('app_name')" class="text-danger">{{ errors.first('app_name') }}</span>
+						</div>
+						<div class="form-group">
+							<label for="app_owner">Owner of new app</label>
+							<input v-model="newAppOwner" class="form-control inputfields" v-validate data-vv-rules="required|alpha|min:1" data-vv-as="app owner"
+											name="app_owner" placeholder="" id="app_owner" />
+							<span v-show="errors.has('app_owner')" class="text-danger">{{ errors.first('app_owner') }}</span>
+						</div>
+
+						<div>
+							<button v-on:click="createApp" class="btn btn-lg btn-d"><i v-show="isCreatingApp" class="fa fa-spinner fa-spin" style="font-size:24px"></i> Create app</button>
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<label for="templateDescription">App description</label>
+						<div>
+							<span name="templateDescription">{{ selected.description }}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- app END -->
+
+		<!-- ScrollToTop Button -->
+		<a class="bloc-button btn btn-d scrollToTop" onclick="scrollToTarget('1')"><span class="fa fa-chevron-up"></span></a>
+		<!-- ScrollToTop Button END-->
+		
+		<!-- Footer -->
+		<div class="bloc bgc-white l-bloc" id="bloc-2">
+			<div class="container b-divider">
+				<div class="row">
+					<div class="col-sm-6">
+						<h3 class="mg-md bloc-mob-center-text">
+							Contact
+						</h3>
+						<a href="index.html" class="a-btn a-block bloc-mob-center-text">Contact 1</a>
+						<a href="index.html" class="a-btn a-block bloc-mob-center-text">Contact 2</a>
+						<a href="index.html" class="a-btn a-block bloc-mob-center-text">Contact 3</a>
+					</div>
+					<div class="col-sm-6">
+						<h3 class="mg-md bloc-mob-center-text">
+							Additional info
+						</h3>
+						<a href="index.html" class="a-btn a-block bloc-mob-center-text" data-placement="left">Info 1</a>
+						<a href="index.html" class="a-btn a-block bloc-mob-center-text" data-placement="left">Info 2</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Footer END -->
+	</div>
+	<!-- Main container END -->
+
+	<script src="https://unpkg.com/notie"></script>
+	<script src="./js/duplicate-app.js"></script>
+</body>
+
+</html>

@@ -34,8 +34,37 @@ The new app usually still needs to be customised to the exact task at hand - but
 If there are more than a handful och Sense developers in a company, there is a good chance there are some guidelines on how to structure the load scripts in Sense apps.  
 By instantiating new apps from template apps (that follow the coding standards), better code quality will be achieved.
 
+
+## User interface
+In its current version, this project consists of two parts: A backend node.js service that deals with all interactions with the Qlik Sense services, and a
+user interface (UI) that talks to the app duplicator service.
+  
+Included in this repo is a fully functioning, basic UI:
+  
+
+| | |
+|-|-|
+|<img src="./doc/Create_app_from_template_1.jpg" alt="Drawing" style="width: 600px;"/>|<img src="./doc/Create_app_from_template_2.jpg" alt="Drawing" style="width: 600px;"/>|
+|<img src="./doc/Create_app_from_template_3.jpg" alt="Drawing" style="width: 600px;"/>|<img src="./doc/Create_app_from_template_4.jpg" alt="Drawing" style="width: 600px;"/>|
+| | |
+
+Features include: 
+
+* A list of available Sense template apps (these are the apps that have been marked as templates by means of the AppIsTemplate custom property, see below).
+* An input box where the new app's name can be entered. This field is verified to be at least 3 characters long, to avoid too short and cryptic app names.
+* An input box where the new app's owner can be entered. There is input valdidation here too - only usernames including basic characters are allowed.
+* A feedback button in upper left corner, providing an easy yet unobtrusive way of providing feedback on the app, asking questions etc. 
+* When an app has been created, the user is presented with a direct link to the new app. No need to first open the hub, then find the new app, and finally open it. Instead - just click the offered link and the new app will open.
+
+ 
+Another interesting option would be to integrate the app duplication concept into alternate Qlik Sense hubs such as Axis' [Simple Hub](http://viz.axisgroup.com/simple-hub/) or [Combined Hub](http://viz.axisgroup.com/combined-hub/)  
+(both part of their [RxQAP](https://github.com/axisgroup/RxQAP) library), or [Stefan's Sense custom hub](https://github.com/countnazgul/sense-custom-hub). 
+Both could probably be very nicely adapted to work with the duplicator service. 
+
+
+
 # Requirements and installation
-* The app duplicator service is intended to be used in a Sense Enterprise environment. Using it with Sense Desktop might be possible, but will require modifications to the source code.
+* The app duplicator service is intended to be used in a Sense Enterprise environment. Using it with Sense Desktop might be possible, but will require modifications of the source code.
 * The service can be run on a Sense server, or on some other server. The only condition is that the server where the app duplicator service runs must be able to connect to the Sense servers (of course..).
 * Node.js must be installed.
 * Download and extract the app duplicator code to a suitable directory on the server.
@@ -45,13 +74,22 @@ By instantiating new apps from template apps (that follow the coding standards),
 * When new apps are created, their reload scripts are either left intact, or replaced with a new script (there are two different REST endpoints for this).  
 If the script is replaced, the new script is retrieved from a URL - typically from a revision control system system such as Github.  
 * Create a custom property (by using the Sense QMC) called "AppIsTemplate". It should only exist for Apps. Possible values should be "Yes" and "No".
-* As of version 1.1.0, the app duplicator only works using https. It's a bit more work setting up, but security is important. No shortcuts.
+* If you are planning to use the UI, please go through the HTML and Javascript files, making sure to
+  * enter the FQDN or IP of your Sense server (needed for the link to the newly created apps).
+  * enter a URL for the feedback button to something that is relevant for you. By default it points to the issue creation dialog in this repository, which is probably not what you want in your production environment..  
+* As of version 1.1.0, the app duplicator only works using https. *It's a bit more work setting up, but security is important. No shortcuts.*
 
 
 # Usage
 Before using the app duplicator service, you need to specify what existing apps should be considered to be templates.
 Open the template apps in the QMC's app section, then set the custom property AppIsTemplate to "Yes" for these apps.  
 That's it - no other configuration needed to make a template out of an existing app!
+
+## A note on SSL certificates
+All commucation is done using https. This includes both between the UI and the duplicator service, as well as between the duplicator service and Qlik Sense.   
+If you use self-signed certificates in the duplicator service, you will probably get warnings when accessing the service.  
+A better option is to use a proper certificate. If you don't already have one, it is possible to get free ones from [https://letsencrypt.org/](https://letsencrypt.org/). 
+
 
 ## Retrieve a list of template apps
 You can use any tool capable of creating REST calls to test the service, including a simple web browser.  
@@ -139,10 +177,3 @@ ownerUserId: string
 ```
 
 
-# UI not included - please consider contributing one!
-The current version of the duplicator service only includes a REST API. You will also need a way to call those API endpoints.  
-If you are a good UI designer and create a stand-alone user interface on top of the duplicator service - please consider open sourcing it.  
-  
-Another interesting option would be to integrate a feature like this in alternate Qlik Sense hubs such as Axis' [Simple Hub](http://viz.axisgroup.com/simple-hub/) or [Combined Hub](http://viz.axisgroup.com/combined-hub/)  
-(both part of their [RxQAP](https://github.com/axisgroup/RxQAP) library), or [Stefan's Sense custom hub](https://github.com/countnazgul/sense-custom-hub). 
-Both could probably be very nicely adapted to work with the duplicator service.

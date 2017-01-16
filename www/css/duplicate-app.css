@@ -1,0 +1,72 @@
+.feedback-banner,
+.feedback-banner__message {
+  height: 30px;
+  line-height: 30px;
+}
+.feedback-banner {
+  height: 30px;
+  line-height: 30px;
+  position: relative;
+  background-color: #F59B23;
+  z-index: 10000;
+  text-align: center;
+  color: #FFF;
+}
+.feedback-banner span {
+  margin-right: 20px;
+}
+@media (min-width: 768px) {
+  .feedback-banner {
+    opacity: 0.8;
+    width: 300px;
+    height: 300px;
+    -webkit-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+    position: fixed;
+    top: -205px;
+    left: -205px;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  .feedback-banner span {
+    margin-right: 0;
+  }
+  .feedback-banner span,
+  .feedback-banner a {
+    display: block;
+  }
+}
+.feedback-banner__message {
+  font-weight: bold;
+}
+@media (min-width: 768px) {
+  .feedback-banner__message {
+    height: 35px;
+    font-size: 1.6em;
+    z-index: 100000;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+  }
+}
+.feedback-banner__sub-message:after {
+  content: normal !important;
+}
+.feedback-banner__sub-message,
+.feedback-banner__sub-message:hover {
+  color: #FFF;
+  text-decoration: none;
+}
+@media (min-width: 768px) {
+  .feedback-banner__sub-message,
+  .feedback-banner__sub-message:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}
+@media (min-width: 768px) {
+  .feedback-banner__sub-message {
+    text-decoration: none;
+    margin-top: 5px;
+    font-size: 0.56em;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+}

@@ -26,7 +26,7 @@
     // For example, if your Sense users full id looks like MYCOMPANY/username, MYCOMPANY would be listed below.
     "senseUserDirectory": "MYCOMPANY",
 
-    // Directory where log files are stored
+    // Directory where log files are stored (no trailing / )
     "logDirectory": "/path/to/log/directory"
     
 }
