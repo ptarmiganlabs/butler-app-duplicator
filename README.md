@@ -33,21 +33,22 @@ The new app usually still needs to be customised to the exact task at hand - but
 * **Better odds of apps aligning with corporate coding standards**  
 If there are more than a handful och Sense developers in a company, there is a good chance there are some guidelines on how to structure the load scripts in Sense apps.  
 By instantiating new apps from template apps (that follow the coding standards), better code quality will be achieved.
-
+  
 
 ## User interface
 In its current version, this project consists of two parts: A backend node.js service that deals with all interactions with the Qlik Sense services, and a
 user interface (UI) that talks to the app duplicator service.
   
 Included in this repo is a basic, but fully functioning UI:
-  
-
+    
+   
 |   |   |
 |---|---|
 | <img src="./doc/Create_app_from_template_1.jpg" alt="Drawing" style="width: 500px;"/> | <img src="./doc/Create_app_from_template_2.jpg" alt="Drawing" style="width: 500px;"/> |
 | <img src="./doc/Create_app_from_template_3.jpg" alt="Drawing" style="width: 500px;"/> | <img src="./doc/Create_app_from_template_4.jpg" alt="Drawing" style="width: 500px;"/> |
 |   |   |
-
+  
+  
 Features include: 
 
 * A list of available Sense template apps (these are the apps that have been marked as templates by means of the AppIsTemplate custom property, see below).
@@ -56,13 +57,13 @@ Features include:
 * A feedback button in upper left corner, providing an easy yet unobtrusive way of providing feedback on the app, asking questions etc. 
 * When an app has been created, the user is presented with a direct link to the new app. No need to first open the hub, then find the new app, and finally open it. Instead - just click the offered link and the new app will open.
 
- 
+  
 Another interesting option would be to integrate the app duplication concept into alternate Qlik Sense hubs such as Axis' [Simple Hub](http://viz.axisgroup.com/simple-hub/) or [Combined Hub](http://viz.axisgroup.com/combined-hub/)  
 (both part of their [RxQAP](https://github.com/axisgroup/RxQAP) library), or [Stefan's Sense custom hub](https://github.com/countnazgul/sense-custom-hub). 
-Both could probably be very nicely adapted to work with the duplicator service. 
-
-
-
+Both could probably be very nicely adapted to work with the duplicator service.  
+<BR>
+     
+   
 # Requirements and installation
 * The app duplicator service is intended to be used in a Sense Enterprise environment. Using it with Sense Desktop might be possible, but will require modifications of the source code.
 * The service can be run on a Sense server, or on some other server. The only condition is that the server where the app duplicator service runs must be able to connect to the Sense servers (of course..).
