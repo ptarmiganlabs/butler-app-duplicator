@@ -49,6 +49,8 @@ Included in this repo is a basic, but fully functioning UI:
 |   |   |
   
   
+<BR>
+<BR>
 Features include: 
 
 * A list of available Sense template apps (these are the apps that have been marked as templates by means of the AppIsTemplate custom property, see below).
