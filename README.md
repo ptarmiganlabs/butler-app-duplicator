@@ -42,11 +42,11 @@ user interface (UI) that talks to the app duplicator service.
 Included in this repo is a fully functioning, basic UI:
   
 
-| | |
-|-|-|
-|<img src="./doc/Create_app_from_template_1.jpg" alt="Drawing" style="width: 600px;"/>|<img src="./doc/Create_app_from_template_2.jpg" alt="Drawing" style="width: 600px;"/>|
-|<img src="./doc/Create_app_from_template_3.jpg" alt="Drawing" style="width: 600px;"/>|<img src="./doc/Create_app_from_template_4.jpg" alt="Drawing" style="width: 600px;"/>|
-| | |
+|   |   |
+|---|---|
+| <img src="./doc/Create_app_from_template_1.jpg" alt="Drawing" style="width: 500px;"/> | <img src="./doc/Create_app_from_template_2.jpg" alt="Drawing" style="width: 500px;"/> |
+| <img src="./doc/Create_app_from_template_3.jpg" alt="Drawing" style="width: 500px;"/> | <img src="./doc/Create_app_from_template_4.jpg" alt="Drawing" style="width: 500px;"/> |
+|   |   |
 
 Features include: 
 
