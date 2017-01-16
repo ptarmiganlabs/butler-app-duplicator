@@ -39,7 +39,7 @@ By instantiating new apps from template apps (that follow the coding standards),
 In its current version, this project consists of two parts: A backend node.js service that deals with all interactions with the Qlik Sense services, and a
 user interface (UI) that talks to the app duplicator service.
   
-Included in this repo is a fully functioning, basic UI:
+Included in this repo is a basic, but fully functioning UI:
   
 
 |   |   |
