@@ -1,3 +1,7 @@
+[![Known Vulnerabilities](https://snyk.io/test/github/mountaindude/sense-template-app-duplicate/badge.svg)](https://snyk.io/test/github/mountaindude/sense-template-app-duplicate)  
+  
+  
+  
 # sense-template-app-duplicate
 Node.js server for handling back-end tasks related to creating new Sense apps, using existing apps as templates
 
