@@ -102,6 +102,9 @@ restServer.listen(8000, function () {
 // URL parameters
 //   -- None --
 function respondGetTemplateList(req, res, next) {
+    configQRS.headers = { 'X-Qlik-User': 'UserDirectory=Internal; UserId=sa_repository' };
+    logger.log('verbose', configQRS);
+
     var qrsInteractInstance = new qrsInteract(configQRS);
 
     var appList = [];
@@ -117,8 +120,8 @@ function respondGetTemplateList(req, res, next) {
                     description: element.description
                 });
 
-                logger.log('debug', 'Element name: ' + element.name);
-                logger.log('debug', 'App list JSON: ' + JSON.stringify(appList));
+                logger.log('verbose', 'Element name: ' + element.name);
+                logger.log('verbose', 'App list JSON: ' + JSON.stringify(appList));
             }, this);
 
             logger.log('info', 'Done getting list of template apps');
