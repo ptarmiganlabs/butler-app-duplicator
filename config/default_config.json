@@ -27,6 +27,9 @@
     "senseUserDirectory": "MYCOMPANY",
 
     // Directory where log files are stored (no trailing / )
-    "logDirectory": "/path/to/log/directory"
+    "logDirectory": "/path/to/log/directory",
     
+    // Reload app after it has been created (true/false)
+    "reloadNewApp": false
+
 }

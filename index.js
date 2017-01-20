@@ -164,6 +164,7 @@ function respondDuplicateNewScript(req, res, next) {
             var newOwnerId, newOwnerUserDirectory, newOwnerName;
             var newOwnerUserId = req.params.ownerUserId;
 
+            var reloadNewApp = config.get('reloadNewApp'); 
 
             // Make sure the app to be duplicated really is a template
             qrsInteractInstance.Get('app/' + req.params.templateAppId)
@@ -218,9 +219,15 @@ function respondDuplicateNewScript(req, res, next) {
                                 return app;
                             })
                             .then(app => {
-                                // Load the data
-                                logger.log('verbose', 'Reload app...');
-                                app.doReload();
+                                // Load the data?
+
+                                if (reloadNewApp) {
+                                    logger.log('verbose', 'Reload app...');
+                                    app.doReload();
+                                } else {
+                                    logger.log('verbose', 'App reloading disabled - skipping.');
+                                }
+
                                 return app
                             })
                             .then(app => {
@@ -284,6 +291,8 @@ function respondDuplicateKeepScript(req, res, next) {
     var newOwnerId, newOwnerUserDirectory, newOwnerName;
     var newOwnerUserId = req.params.ownerUserId;
 
+    var reloadNewApp = config.get('reloadNewApp'); 
+
     // Make sure the app to be duplicated really is a template
     qrsInteractInstance.Get('app/' + req.params.templateAppId)
         .then(result => {
@@ -331,9 +340,15 @@ function respondDuplicateKeepScript(req, res, next) {
                         return global.openDoc(newAppId)
                     })
                     .then(app => {
-                        // Load the data
-                        logger.log('verbose', 'Reload app...');
-                        app.doReload();
+                        // Load the data?
+
+                        if (reloadNewApp) {
+                            logger.log('verbose', 'Reload app...');
+                            app.doReload();
+                        } else {
+                            logger.log('verbose', 'App reloading disabled - skipping.');
+                        }
+
                         return app
                     })
                     .then(app => {
