@@ -43,7 +43,7 @@ var app = new Vue({
                 vueInstance.isCreatingApp = false;
 
                 var msgSuccess = 'Success!  Your new app is available <a href="https://ip.of.server/sense/app/' + data.newAppId + '" target="_blank">here</a>.';
-                notie.alert('success', msgSuccess);
+                notie.alert({type: 'success', text: msgSuccess });
             });
         },
 
@@ -95,11 +95,10 @@ var app = new Vue({
 var ssoUser = "";
 
 
-
 // JQuery helper method getJSON described here: https://api.jquery.com/jquery.getjson/
 
 // Assign handlers immediately after making the request, and remember the jqxhr object for this request
-notie.alert('info', ' <i class="fa fa-spinner fa-spin" style="font-size:24px"></i> Loading app templates....');
+notie.alert({ type: 'info', text: ' <i class="fa fa-spinner fa-spin" style="font-size:24px"></i> Loading app templates....' });
 
 var jqxhr1 = $.getJSON(duplicatorService + '/getTemplateList', {}, function (data) {
     $.each(data, function (index, element) {
@@ -112,9 +111,9 @@ var jqxhr1 = $.getJSON(duplicatorService + '/getTemplateList', {}, function (dat
         notie.alertHide();
     })
     .fail(function () {
-        notie.alert('error', 'Error: Could not retrieve list of templates from Sense server.', 5);
+        notie.alert({type: 'error', text: 'Error: Could not retrieve list of templates from Sense server.', time:5 });
     })
     .always(function () {
-        // console.log("complete");
+        // console.log("Done loading templates");
     });
 
