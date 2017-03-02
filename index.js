@@ -92,7 +92,7 @@ restServer.get('/getTemplateList', respondGetTemplateList);
 
 
 // Start the server
-restServer.listen(8000, function () {
+restServer.listen(8001, function () {
     console.log('%s listening at %s', restServer.name, restServer.url);
 });
 
