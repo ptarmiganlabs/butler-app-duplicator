@@ -43,7 +43,7 @@ var app = new Vue({
                 vueInstance.isCreatingApp = false;
 
                 var msgSuccess = 'Success!  Your new app is available <a href="https://ip.of.server/sense/app/' + data.newAppId + '" target="_blank">here</a>.';
-                notie.alert({type: 'success', text: msgSuccess });
+                notie.alert({type: 'success', text: msgSuccess, stay: true });
             });
         },
 
