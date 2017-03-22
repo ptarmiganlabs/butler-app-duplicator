@@ -99,7 +99,7 @@
 						</div>
 
 						<div>
-							<button v-on:click="createApp" class="btn btn-lg btn-d"><i v-show="isCreatingApp" class="fa fa-spinner fa-spin" style="font-size:24px"></i> Create app</button>
+							<button v-on:click="createApp" class="btn btn-lg btn-d" :disabled="isCreatingApp"><i v-show="isCreatingApp" class="fa fa-spinner fa-spin" style="font-size:24px"></i> Create app</button>
 						</div>
 					</div>
 					<div class="col-sm-4">
