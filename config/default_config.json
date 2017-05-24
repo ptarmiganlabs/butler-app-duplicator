@@ -8,6 +8,7 @@
     // Paths to client certificates to use when connecting to Sense server. Can be pem or pvk/cer
     "clientCertPath": "/path/to/client/cert/client.pem",
     "clientCertKeyPath": "/path/to/client/cert/client_key.pem",
+    "clientCertRootPath": "/path/to/client/cert/root.pem",
 
     // Paths to ssl certificate and key used to secure the communication to the duplicate server. Can be pem or pvk/cer
     "sslCertPath": "/path/to/ssl/cert/client.cer",
