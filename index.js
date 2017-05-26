@@ -1,4 +1,3 @@
-//const qsocks = require('qsocks');
 const enigma = require('enigma.js');
 const WebSocket = require('ws');
 const fs = require('fs');
@@ -46,7 +45,6 @@ logger.log('info', 'Starting Qlik Sense template app duplicator.');
 // Read certificates
 const client = fs.readFileSync(config.get('clientCertPath'));
 const client_key = fs.readFileSync(config.get('clientCertKeyPath'));
-// const rootCert = fs.readFileSync(config.get('clientCertRootPath'));
 
 // Read load script from wherever it is stored (Github etc)
 const loadScriptURL = config.get('loadScriptURL');
