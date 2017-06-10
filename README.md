@@ -4,9 +4,11 @@
 [![NSP Status](https://nodesecurity.io/orgs/ptarmiganlabscom/projects/fd47ee20-3874-4aab-9a6d-c8ac5106f03e/badge)](https://nodesecurity.io/orgs/ptarmiganlabscom/projects/fd47ee20-3874-4aab-9a6d-c8ac5106f03e)    
   
 <BR>
-<BR>
 
 
+![Sense app duplicator](doc/duplicate.png "Sense app duplicator")  
+<BR>    
+  
 Node.js server for handling back-end tasks related to creating new Sense apps, using existing apps as templates
 
 
