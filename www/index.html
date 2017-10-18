@@ -93,7 +93,7 @@
 						</div>
 						<div class="form-group">
 							<label for="app_owner">Owner of new app</label>
-							<input v-model="newAppOwner" class="form-control inputfields" v-validate data-vv-rules="required|alpha|min:1" data-vv-as="app owner"
+							<input v-model="newAppOwner" class="form-control inputfields" v-validate data-vv-rules="required|alpha_num|min:1" data-vv-as="app owner"
 											name="app_owner" placeholder="" id="app_owner" />
 							<span v-show="errors.has('app_owner')" class="text-danger">{{ errors.first('app_owner') }}</span>
 						</div>
