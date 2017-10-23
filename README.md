@@ -18,8 +18,7 @@ Node.js server for handling back-end tasks related to creating new Sense apps, u
 While perfectly possible to create every Sense app from scratch, Sense developers quickly realise the value of having a library of 
 code snippets, usually in the form of include files that can be brought into the load script by means of $(Must_Include=[lib://path/to/script.qvs]) or similar.
 This does go a long way towards reusing important pieces of code, but it also requires that developers remember to include the correct source code files.
-It also helps when training new Sense developers - they do not have to learn every detail about every piece of code that is shared across apps - the include
-files provide a nice layer of abstraction.
+It also helps when training new Sense developers - they do not have to learn every detail about every piece of code that is shared across apps - the include files provide a nice layer of abstraction.
   
 This app duplicator project started after realising that the above could be improved.
 
@@ -29,8 +28,7 @@ This app duplicator project started after realising that the above could be impr
 * **Lowered barrier of entry for new Sense developers**  
 Sense app development can be a challenge for people coming from other platforms and languages.  
 The script language borrows from other languages, but is at the end of the day unique.
-By allowing developers coming to the Sense platform   
-to easily create skeleton apps based on well designed and complete template apps, these people will become productive way quicker than otherwise.  
+By allowing developers coming to the Sense platform to easily create skeleton apps based on well designed and complete template apps, these people will become productive way quicker than otherwise.  
 Their apps will also be of higher quality than if they had to start over from scratch for each app they create.
 
 * **Productivity boost for experienced Sense developers**  
@@ -79,12 +77,12 @@ Both could probably be very nicely adapted to work with the duplicator service.
 # Requirements and installation
 * The app duplicator service is intended to be used in a Sense Enterprise environment. Using it with Sense Desktop might be possible, but will require modifications of the source code.
 * The service can be run on a Sense server, or on some other server. The only condition is that the server where the app duplicator service runs must be able to connect to the Sense servers (of course..).
-* Node.js must be installed.
+* Node.js must be installed. The app duplicator service was developed using Node 6.10.0, but will probably run well on any reasonably recent Node version.
 * Download and extract the app duplicator code to a suitable directory on the server.
 * Copy the default_config.json file to a new file called default.json. Place the new file in the "config" directory.
 * Edit the default.json file to meet your specific environment.
 * Start the service by running "node index.js" from the command prompt.
-* When new apps are created, their reload scripts are either left intact, or replaced with a new script (there are two different REST endpoints for this).  
+* When new apps are created, the reload script of the template app is either left intact, or replaced with a new script (there are two different REST endpoints for this).  
 If the script is replaced, the new script is retrieved from a URL - typically from a revision control system system such as Github.  
 * Create a custom property (by using the Sense QMC) called "AppIsTemplate". It should only exist for Apps. Possible values should be "Yes" and "No".
 * If you are planning to use the UI, please go through the HTML and Javascript files, making sure to
