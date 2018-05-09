@@ -114,7 +114,7 @@ restServer.get('/getTemplateList', respondGetTemplateList);
 
 
 // Start the server
-restServer.listen(8001, function () {
+restServer.listen(config.get('restAPIPort'), function () {
     console.log('%s listening at %s', restServer.name, restServer.url);
 });
 

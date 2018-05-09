@@ -27,6 +27,9 @@ senseUserDirectory: MYCOMPANY
 # Qlik Associative Engine version to use with Enigma.js
 engineVersion: 12.20.0
 
+# Port on which the app duplicator's REST API will listen
+restAPIPort: 8001 
+
 # Directory where log files are stored (no trailing / )
 logDirectory: /path/to/log/directory
 
