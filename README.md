@@ -57,6 +57,18 @@ Included in this repo is a basic, but fully functioning UI:
 |   |   |
   
   
+
+
+|   |   |
+|---|---|
+| <img src="./doc/Create_app_from_template_1.jpg" alt="Drawing" style="width: 500px;"/> | <img src="./doc/Create_app_from_template_2.jpg" alt="Drawing" style="width: 500px;"/> |
+| <img src="./doc/Create_app_from_template_3.jpg" alt="Drawing" style="width: 500px;"/> | <img src="./doc/Create_app_from_template_4.jpg" alt="Drawing" style="width: 500px;"/> |
+|   |   |
+
+
+![Img](./doc/Create_app_from_template_1.jpg "")
+
+
 <BR>
 <BR>
 Features include: 
