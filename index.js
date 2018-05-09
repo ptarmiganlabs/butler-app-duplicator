@@ -7,6 +7,7 @@ var request = require('request');
 var restify = require('restify');
 var winston = require('winston');
 var config = require('config');
+const corsMiddleware = require('restify-cors-middleware')
 
 
 
@@ -94,10 +95,20 @@ var restServer = restify.createServer({
 
 
 // Enable parsing of http parameters
-restServer.use(restify.queryParser());
+// server.use(restify.plugins.bodyParser());
+restServer.use(restify.plugins.queryParser());
+
 
 // Set up CORS handling
-restServer.use(restify.CORS({ origins: ['*'] }));
+// restServer.use(restify.CORS({ origins: ['*'] }));
+const cors = corsMiddleware({
+  preflightMaxAge: 5, //Optional
+  origins: ['*']
+})
+
+restServer.pre(cors.preflight)
+restServer.use(cors.actual)
+
 
 // Set up endpoints for REST server
 restServer.get('/duplicateNewScript', respondDuplicateNewScript);
