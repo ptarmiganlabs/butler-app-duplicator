@@ -103,6 +103,19 @@ If you use self-signed certificates in the duplicator service, you will probably
 A better option is to use a proper certificate. If you don't already have one, it is possible to get free ones from [https://letsencrypt.org/](https://letsencrypt.org/). 
 
 
+## Using the web UI
+The web UI is basic but fully functional. It can be used as is, or as a starting point for your own customizations.  
+If you want to try it out you can use [http-server](https://github.com/indexzero/http-server) to serve the web UI. Just install http-server, cd into the www directory and run http-server
+
+```
+mylaptop:www goran$ http-server
+Starting up http-server, serving ./
+Available on:
+  http://127.0.0.1:8080
+  http://192.168.1.132:8080
+Hit CTRL-C to stop the server
+```
+
 ## Retrieve a list of template apps
 You can use any tool capable of creating REST calls to test the service, including a simple web browser.  
 Standard curl is used below, the assumption is that the command is executed on the same server where the app duplicator service is running, and that the service port is configured to be 8000.
