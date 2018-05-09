@@ -1,0 +1,32 @@
+# Rename this file to default.yaml, and fill in data as needed below.
+
+# Possible log levels are silly, debug, verbose, info, warn, error
+defaultLogLevel: info
+
+# Paths to client certificates to use when connecting to Sense server. Can be pem or pvk/cer
+clientCertPath: /path/to/client/cert/client.pem
+clientCertKeyPath: /path/to/client/cert/client_key.pem
+
+# Paths to ssl certificate and key used to secure the communication to the duplicate server. Can be pem or pvk/cer
+sslCertPath: /path/to/ssl/cert/client.cer
+sslCertKeyPath: /path/to/ssl/cert/client_key.pvk
+
+# URL where newly created apps' load scripts are retrieved from. Change to something more relevant than the sample code..
+loadScriptURL: https://raw.githubusercontent.com/mountaindude/testdata/master/test-load-script-1.qvs
+
+# Sense server we should connect to
+host: yourhost.company.com
+
+# Is connection to Sense engine secure (https)?
+isSecure: true
+
+# Newly created apps will be assigned to specific users. Next config option specifies what user directory this user belongs to.
+# For example, if your Sense users full id looks like MYCOMPANY/username, MYCOMPANY would be listed below.
+senseUserDirectory: MYCOMPANY
+
+# Directory where log files are stored (no trailing / )
+logDirectory: /path/to/log/directory
+
+# Reload app after it has been created (true/false)
+reloadNewApp: false
+
