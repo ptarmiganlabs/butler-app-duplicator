@@ -87,7 +87,7 @@ var configQRS = {
 
 var restServer = restify.createServer({
     name: 'Qlik Sense app duplicator',
-    version: '1.2.0',
+    version: '2.1',
     certificate: fs.readFileSync(config.get('sslCertPath')),
     key: fs.readFileSync(config.get('sslCertKeyPath'))
 });
