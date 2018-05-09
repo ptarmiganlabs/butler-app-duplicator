@@ -2,7 +2,7 @@
 var d = [];
 var s;
 
-var duplicatorService = 'https://localhost:8000';
+var duplicatorService = 'https://localhost:8001';
 
 var app = new Vue({
     el: "#app",
