@@ -50,7 +50,8 @@ const client_key = fs.readFileSync(config.get('clientCertKeyPath'));
 const loadScriptURL = config.get('loadScriptURL');
 
 // Set up enigma.js configuration
-const qixSchema = require('enigma.js/schemas/qix/3.2/schema.json');
+// const qixSchema = require('enigma.js/schemas/qix/3.2/schema.json');
+const qixSchema = require('enigma.js/schemas/12.20.0.json');
 const configEnigma = {
     schema: qixSchema,
     session: {
@@ -86,7 +87,7 @@ var configQRS = {
 
 var restServer = restify.createServer({
     name: 'Qlik Sense app duplicator',
-    version: '1.1.0',
+    version: '1.2.0',
     certificate: fs.readFileSync(config.get('sslCertPath')),
     key: fs.readFileSync(config.get('sslCertKeyPath'))
 });
