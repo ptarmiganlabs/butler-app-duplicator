@@ -24,6 +24,9 @@ isSecure: true
 # For example, if your Sense users full id looks like MYCOMPANY/username, MYCOMPANY would be listed below.
 senseUserDirectory: MYCOMPANY
 
+# Qlik Associative Engine version to use with Enigma.js
+engineVersion: 12.20.0
+
 # Directory where log files are stored (no trailing / )
 logDirectory: /path/to/log/directory
 

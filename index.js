@@ -51,8 +51,7 @@ const client_key = fs.readFileSync(config.get('clientCertKeyPath'));
 const loadScriptURL = config.get('loadScriptURL');
 
 // Set up enigma.js configuration
-// const qixSchema = require('enigma.js/schemas/qix/3.2/schema.json');
-const qixSchema = require('enigma.js/schemas/12.20.0.json');
+const qixSchema = require('enigma.js/schemas/' + config.get('engineVersion') + '.json');
 const configEnigma = {
     schema: qixSchema,
     session: {
@@ -95,12 +94,10 @@ var restServer = restify.createServer({
 
 
 // Enable parsing of http parameters
-// server.use(restify.plugins.bodyParser());
 restServer.use(restify.plugins.queryParser());
 
 
 // Set up CORS handling
-// restServer.use(restify.CORS({ origins: ['*'] }));
 const cors = corsMiddleware({
   preflightMaxAge: 5, //Optional
   origins: ['*']
