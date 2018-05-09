@@ -77,10 +77,10 @@ Both could probably be very nicely adapted to work with the duplicator service.
 # Requirements and installation
 * The app duplicator service is intended to be used in a Sense Enterprise environment. Using it with Sense Desktop might be possible, but will require modifications of the source code.
 * The service can be run on a Sense server, or on some other server. The only condition is that the server where the app duplicator service runs must be able to connect to the Sense servers (of course..).
-* Node.js must be installed. The app duplicator service was developed using Node 6.10.0, but will probably run well on any reasonably recent Node version.
+* Node.js must be installed. The app duplicator service was developed using Node 6.10.0, but has been successfully tested with later Node versions too. At the time of this writing the service runs nicely with Node 8.9.4.
 * Download and extract the app duplicator code to a suitable directory on the server.
-* Copy the default_config.json file to a new file called default.json. Place the new file in the "config" directory.
-* Edit the default.json file to meet your specific environment.
+* Copy the default_config.yaml file to a new file called default.yaml. Place the new file in the "config" directory.
+* Edit the default.yaml file to meet your specific environment.
 * Start the service by running "node index.js" from the command prompt.
 * When new apps are created, the reload script of the template app is either left intact, or replaced with a new script (there are two different REST endpoints for this).  
 If the script is replaced, the new script is retrieved from a URL - typically from a revision control system system such as Github.  
@@ -104,7 +104,7 @@ A better option is to use a proper certificate. If you don't already have one, i
 
 ## Retrieve a list of template apps
 You can use any tool capable of creating REST calls to test the service, including a simple web browser.  
-Standard curl is used below, the assumption is that the command is executed on the same server where the app duplicator service is running.
+Standard curl is used below, the assumption is that the command is executed on the same server where the app duplicator service is running, and that the service port is configured to be 8000.
 
 ```sh
 curl -X GET "https://localhost:8000/getTemplateList"
@@ -186,3 +186,6 @@ appName: string
 templateAppId: string
 ownerUserId: string
 ```
+
+## Version history
+1.2 Changed to YAML config file, updated module dependencies to latest version, added new config options for port and engine version.
