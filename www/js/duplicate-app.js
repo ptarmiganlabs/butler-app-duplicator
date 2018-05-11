@@ -108,7 +108,7 @@ var jqxhr1 = $.getJSON(duplicatorService + '/getTemplateList', {}, function (dat
     app.selected = { appId: d[0].value, description: d[0].description };
 })
     .done(function () {
-        notie.alertHide();
+        // notie.alertHide();
     })
     .fail(function () {
         notie.alert({type: 'error', text: 'Error: Could not retrieve list of templates from Sense server.', time:5 });
