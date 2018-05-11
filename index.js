@@ -7,8 +7,11 @@ var request = require('request');
 var restify = require('restify');
 var winston = require('winston');
 var config = require('config');
-const corsMiddleware = require('restify-cors-middleware')
 
+const corsMiddleware = require('restify-cors-middleware')
+var errors = require('restify-errors');
+
+var appVersion = require('./package.json').version;
 
 
 // Set up Winston logger, logging both to console and different disk files
@@ -52,28 +55,13 @@ const loadScriptURL = config.get('loadScriptURL');
 
 // Set up enigma.js configuration
 const qixSchema = require('enigma.js/schemas/' + config.get('engineVersion') + '.json');
-const configEnigma = {
-    schema: qixSchema,
-    session: {
-        host: config.get('host'),
-        port: 4747, // Standard Engine port
-        secure: config.get('isSecure'),
-        disableCache: true
-    },
-    createSocket: (url, sessionConfig) => {
-        return new WebSocket(url, {
-            // ca: rootCert,
-            key: client_key,
-            cert: client,
-            headers: {
-                'X-Qlik-User': 'UserDirectory=Internal;UserId=sa_repository'
-            },
-            rejectUnauthorized: false
-        });
-    }
-}
 
+// Sense Enterprise hostname:
+const engineHost = config.get('host');
 
+// Make sure the port below is accessible from the machine where this example
+// is executed. If you changed the QIX Engine port in your installation, change this:
+const enginePort = 4747;
 
 // Set up Sense repository service configuration
 var configQRS = {
@@ -84,10 +72,9 @@ var configQRS = {
     }
 }
 
-
 var restServer = restify.createServer({
     name: 'Qlik Sense app duplicator',
-    version: '2.1.0',
+    version: appVersion,
     certificate: fs.readFileSync(config.get('sslCertPath')),
     key: fs.readFileSync(config.get('sslCertKeyPath'))
 });
@@ -172,7 +159,7 @@ function respondGetTemplateList(req, res, next) {
 function respondDuplicateNewScript(req, res, next) {
 
     // Add owner of new app as header in call to QRS. That way this user will automatically be owner of the newly created app.
-    configQRS.headers = { 'X-Qlik-User': 'UserDirectory=' + config.get('senseUserDirectory') + '; UserId=' + req.params.ownerUserId };
+    configQRS.headers = { 'X-Qlik-User': 'UserDirectory=' + config.get('senseUserDirectory') + '; UserId=' + req.query.ownerUserId };
     logger.log('debug', configQRS);
 
     var qrsInteractInstance = new qrsInteract(configQRS);
@@ -185,22 +172,17 @@ function respondDuplicateNewScript(req, res, next) {
             var loadScript = body;
             logger.log('debug', 'Load script: ' + loadScript);
 
-            enigma.getService('qix', configEnigma).then((qix) => {
-                const g = qix.global;
-                logger.log('debug', req.params.appName + ': Got the global instance');
-            });
-
             var newAppId = '';
 
             var newOwnerId, newOwnerUserDirectory, newOwnerName;
-            var newOwnerUserId = req.params.ownerUserId;
+            var newOwnerUserId = req.query.ownerUserId;
 
             // Get config data on whether to reload the new app or not
             var reloadNewApp = config.get('reloadNewApp'); 
 
             // Make sure the app to be duplicated really is a template
-            qrsInteractInstance.Get('app/' + req.params.templateAppId).then(result => {
-                logger.log('verbose', req.params.templateAppId + 'Testing if specifiec template app really is a template');
+            qrsInteractInstance.Get('app/' + req.query.templateAppId).then(result => {
+                logger.log('verbose', req.query.templateAppId + 'Testing if specified template app really is a template');
 
                 var appIsTemplate = false;
                 result.body.customProperties.forEach(function (item) {
@@ -211,7 +193,7 @@ function respondDuplicateNewScript(req, res, next) {
                     }
                 })
 
-                logger.log('verbose', req.params.templateAppId + 'App is template: ' + appIsTemplate);
+                logger.log('verbose', req.query.templateAppId + 'App is template: ' + appIsTemplate);
 
                 if (!appIsTemplate) {
                     logger.log('warn', 'The provided app ID does not belong to a template app');
@@ -223,32 +205,46 @@ function respondDuplicateNewScript(req, res, next) {
             .then(result => {
                 // result == true if the provided app ID belongs to a template app
                 if (result) {
-                    qrsInteractInstance.Post('app/' + req.params.templateAppId + '/copy?name=' + req.params.appName, {}, 'json').then(result => {
-                        logger.log('info', 'App created with ID %s, using %s as a template ', result.body.id, req.params.templateAppId);
+                    qrsInteractInstance.Post('app/' + req.query.templateAppId + '/copy?name=' + req.query.appName, {}, 'json').then(result => {
+                        logger.log('info', 'App created with ID %s, using %s as a template ', result.body.id, req.query.templateAppId);
                         newAppId = result.body.id;
 
-                        enigma.getService('qix', configEnigma).then((qix) => {
+                        // Open new app and reload it
+                        const configEnigma = {
+                            schema: qixSchema,
+                            url: `wss://${engineHost}:${enginePort}/app/${newAppId}`,
+                            createSocket: url => new WebSocket(url, {
+                                key: client_key,
+                                cert: client,
+                                headers: {
+                                'X-Qlik-User': 'UserDirectory=Internal;UserId=sa_repository',
+                                },
+                                rejectUnauthorized: false
+                            }),
+                        };
+                        
+                        enigma.create(configEnigma).open().then((global) => {
                             const g = qix.global;
 
                             // Connect to engine
-                            logger.log('verbose', req.params.appName + ': Connecting to engine...');
+                            logger.log('verbose', req.query.appName + ': Connecting to engine...');
 
-                            g.openApp(newAppId).then((app) => {
+                            g.openDoc(newAppId).then((app) => {
                                 logger.log('verbose', 'Setting load script...');
                                 app.setScript(loadScript).then((app) => {
 
                                     // Do a reload of the new app?
                                     if (reloadNewApp) {
-                                        logger.log('verbose', req.params.appName + ': Reload app...');
+                                        logger.log('verbose', req.query.appName + ': Reload app...');
                                         app.doReload();
                                     } else {
-                                        logger.log('verbose', req.params.appName + ': App reloading disabled - skipping.');
+                                        logger.log('verbose', req.query.appName + ': App reloading disabled - skipping.');
                                     }
 
                                     // Close our connection.
-                                    logger.log('verbose', req.params.appName + ': Close connection to engine...');
+                                    logger.log('verbose', req.query.appName + ': Close connection to engine...');
                                     g.session.close().then(() => {
-                                        logger.log('info', req.params.appName + ': Done duplicating, new app id=' + newAppId);
+                                        logger.log('info', req.query.appName + ': Done duplicating, new app id=' + newAppId);
                                         var jsonResult = { result: "Done duplicating app", newAppId: newAppId }
                                         res.send(jsonResult);
                                         next();
@@ -256,45 +252,45 @@ function respondDuplicateNewScript(req, res, next) {
                                     .catch(err => {
                                         // Return error msg
                                         logger.log('error', 'Duplication error 1: ' + err);
-                                        next(new restify.BadRequestError("Error occurred when test app template status."));;
+                                        next(new restify.BadRequestError("Error occurred when closing newly created app."));
                                         return;
                                     })
-                                    logger.log('verbose', req.params.appName + ': Connection closed...');
+                                    logger.log('verbose', req.query.appName + ': Connection closed...');
                                 })
                                 .catch(err => {
                                     // Return error msg
                                     logger.log('error', 'Duplication error 2: ' + err);
-                                    next(new restify.BadRequestError("Error occurred when test app template status."));;
+                                    next(new restify.BadRequestError("Error occurred when replacing script of newly created app."));
                                     return;
                                 });
                             })
                             .catch(err => {
                                 // Return error msg
-                                logger.log('error', 'Duplication error 2: ' + err);
-                                next(new restify.BadRequestError("Error occurred when test app template status."));;
+                                logger.log('error', 'Duplication error 3: ' + err);
+                                next(new restify.BadRequestError("Error occurred when opening newly created app."));
                                 return;
                             });
                         })
                         .catch(err => {
                             // Return error msg
-                            logger.log('error', 'Duplication error 2: ' + err);
-                            next(new restify.BadRequestError("Error occurred when test app template status."));;
+                            logger.log('error', 'Duplication error 4: ' + err);
+                            next(new restify.BadRequestError("Error occurred when creating Enigma object."));
                             return;
                         });
 
                     })
                     .catch(err => {
                         // Return error msg
-                        logger.log('error', 'Duplication error 3: ' + err);
-                        next(new restify.BadRequestError("Error occurred when test app template status."));;
+                        logger.log('error', 'Duplication error 5: ' + err);
+                        next(new restify.BadRequestError("Error occurred when creating new app from template."));
                         return;
                     });
                 }
             })
             .catch(err => {
                 // Return error msg
-                logger.log('error', 'Duplication error 4: ' + err);
-                next(new restify.BadRequestError("Error occurred when test app template status."));;
+                logger.log('error', 'Duplication error 6: ' + err);
+                next(new restify.BadRequestError("Error occurred when test app template status."));
                 return;
             });
         }
@@ -313,28 +309,23 @@ function respondDuplicateNewScript(req, res, next) {
 function respondDuplicateKeepScript(req, res, next) {
 
     // Add owner of new app as header in call to QRS. That way this user will automatically be owner of the newly created app.
-    configQRS.headers = { 'X-Qlik-User': 'UserDirectory=' + config.get('senseUserDirectory') + '; UserId=' + req.params.ownerUserId };
+    configQRS.headers = { 'X-Qlik-User': 'UserDirectory=' + config.get('senseUserDirectory') + '; UserId=' + req.query.ownerUserId };
     logger.log('debug', configQRS);
 
     var qrsInteractInstance = new qrsInteract(configQRS);
 
-    enigma.getService('qix', configEnigma).then((qix) => {
-        const g = qix.global;
-        logger.log('debug', req.params.appName + ': Got the global instance');
-    });
-
     var newAppId = '';
 
     var newOwnerId, newOwnerUserDirectory, newOwnerName;
-    var newOwnerUserId = req.params.ownerUserId;
+    var newOwnerUserId = req.query.ownerUserId;
 
     // Get config data on whether to reload the new app or not
     var reloadNewApp = config.get('reloadNewApp'); 
 
     // Make sure the app to be duplicated really is a template
-    qrsInteractInstance.Get('app/' + req.params.templateAppId)
+    qrsInteractInstance.Get('app/' + req.query.templateAppId)
         .then(result => {
-            logger.log('verbose', req.params.templateAppId + 'Testing if specifiec template app really is a template');
+            logger.log('verbose', req.query.templateAppId + 'Testing if specifiec template app really is a template');
 
             var appIsTemplate = false;
             result.body.customProperties.forEach(function (item) {
@@ -345,7 +336,7 @@ function respondDuplicateKeepScript(req, res, next) {
                 }
             })
 
-            logger.log('verbose', req.params.templateAppId + 'App is template: ' + appIsTemplate);
+            logger.log('verbose', req.query.templateAppId + 'App is template: ' + appIsTemplate);
 
             if (!appIsTemplate) {
                 logger.log('warn', 'The provided app ID does not belong to a template app');
@@ -357,29 +348,43 @@ function respondDuplicateKeepScript(req, res, next) {
         .then(result => {
             // result == true if the provided app ID belongs to a template app
             if (result) {
-                qrsInteractInstance.Post('app/' + req.params.templateAppId + '/copy?name=' + req.params.appName, {}, 'json').then(result => {
-                    logger.log('info', 'App created with ID %s, using %s as a template ', result.body.id, req.params.templateAppId);
+                qrsInteractInstance.Post('app/' + req.query.templateAppId + '/copy?name=' + req.query.appName, {}, 'json').then(result => {
+                    logger.log('info', 'App created with ID %s, using %s as a template ', result.body.id, req.query.templateAppId);
                     newAppId = result.body.id;
 
-                    enigma.getService('qix', configEnigma).then((qix) => {
-                        const g = qix.global;
+                    // Open new app and reload it
+                    const configEnigma = {
+                        schema: qixSchema,
+                        url: `wss://${engineHost}:${enginePort}/app/${newAppId}`,
+                        createSocket: url => new WebSocket(url, {
+                            key: client_key,
+                            cert: client,
+                            headers: {
+                              'X-Qlik-User': 'UserDirectory=Internal;UserId=sa_repository',
+                            },
+                            rejectUnauthorized: false
+                        }),
+                    }
+                    
+                    enigma.create(configEnigma).open().then((global) => {
+                        const g = global;
 
                         // Connect to engine
-                        logger.log('verbose', req.params.appName + ': Connecting to engine...');
+                        logger.log('verbose', req.query.appName + ': Connecting to engine...');
 
-                        g.openApp(newAppId).then((app) => {
+                        g.openDoc(newAppId).then((app) => {
                             // Do a reload of the new app?
                             if (reloadNewApp) {
-                                logger.log('verbose', req.params.appName + ': Reload app...');
+                                logger.log('verbose', req.query.appName + ': Reload app...');
                                 app.doReload();
                             } else {
-                                logger.log('verbose', req.params.appName + ': App reloading disabled - skipping.');
+                                logger.log('verbose', req.query.appName + ': App reloading disabled - skipping.');
                             }
 
                             // Close our connection.
-                            logger.log('verbose', req.params.appName + ': Close connection to engine...');
+                            logger.log('verbose', req.query.appName + ': Close connection to engine...');
                             g.session.close().then(() => {
-                                logger.log('info', req.params.appName + ': Done duplicating, new app id=' + newAppId);
+                                logger.log('info', req.query.appName + ': Done duplicating, new app id=' + newAppId);
                                 var jsonResult = { result: "Done duplicating app", newAppId: newAppId }
                                 res.send(jsonResult);
                                 next();
@@ -387,29 +392,29 @@ function respondDuplicateKeepScript(req, res, next) {
                             .catch(err => {
                                 // Return error msg
                                 logger.log('error', 'Duplication error 1: ' + err);
-                                next(new restify.BadRequestError("Error occurred when test app template status."));;
+                                next(new errors.BadRequestError("Error occurred when closing newly created app."));
                                 return;
                             })
-                            logger.log('verbose', req.params.appName + ': Connection closed...');
+                            logger.log('verbose', req.query.appName + ': Connection closed...');
                         })
                         .catch(err => {
                             // Return error msg
                             logger.log('error', 'Duplication error 2: ' + err);
-                            next(new restify.BadRequestError("Error occurred when test app template status."));;
+                            next(new errors.BadRequestError("Error occurred when opening newly created app."));
                             return;
                         });
                     })
                     .catch(err => {
                         // Return error msg
                         logger.log('error', 'Duplication error 3: ' + err);
-                        next(new restify.BadRequestError("Error occurred when test app template status."));;
+                        next(new errors.BadRequestError("Error occurred when creating Enigma object."));
                         return;
                     })
                 })
                 .catch(err => {
                     // Return error msg
                     logger.log('error', 'Duplication error 4: ' + err);
-                    next(new restify.BadRequestError("Error occurred when test app template status."));;
+                    next(new restify.BadRequestError("Error occurred when creating new app from template."));
                     return;
                 })
             }
@@ -418,7 +423,7 @@ function respondDuplicateKeepScript(req, res, next) {
             // Return error msg
             logger.log('error', 'Duplication error 5: ' + err);
             // res.send(err);
-            next(new restify.BadRequestError("Error occurred when test app template status."));;
+            next(new restify.BadRequestError("Error occurred when test app template status."));
             return;
         })
 
