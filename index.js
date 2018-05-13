@@ -210,7 +210,8 @@ function respondDuplicateNewScript(req, res, next) {
                 .then(result => {
                     // result == true if the provided app ID belongs to a template app
                     if (result) {
-                        qrsInteractInstance.Post('app/' + req.query.templateAppId + '/copy?name=' + req.query.appName, {}, 'json').then(result => {
+                        qrsInteractInstance.Post('app/' + req.query.templateAppId + '/copy?name=' + req.query.appName, {}, 'json')
+                            .then(result => {
                                 logger.log('info', 'App created with ID %s, using %s as a template ', result.body.id, req.query.templateAppId);
                                 newAppId = result.body.id;
 
@@ -228,46 +229,89 @@ function respondDuplicateNewScript(req, res, next) {
                                     }),
                                 };
 
-                                enigma.create(configEnigma).open().then((global) => {
+                                enigma.create(configEnigma).open()
+                                    .then((global) => {
                                         const g = global;
 
                                         // Connect to engine
                                         logger.log('verbose', req.query.appName + ': Connecting to engine...');
 
-                                        g.openDoc(newAppId).then((a) => {
+                                        g.openDoc(newAppId)
+                                            .then((a) => {
                                                 const app = a;
 
                                                 logger.log('verbose', 'Setting load script...');
-                                                app.setScript(loadScript).then((result) => {
-
+                                                app.setScript(loadScript)
+                                                    .then((result) => {
                                                         // Do a reload of the new app?
                                                         if (reloadNewApp) {
-                                                            logger.log('verbose', req.query.appName + ': Reload app...');
-                                                            app.doReload();
-                                                        } else {
-                                                            logger.log('verbose', req.query.appName + ': App reloading disabled - skipping.');
-                                                        }
+                                                            logger.log('verbose', req.query.appName + ': Reloading app (might take a while, depending on the app)...');
+                                                            app.doReload()
+                                                                .then((result) => {
+                                                                    logger.log('verbose', req.query.appName + ': App reloaded.');
 
-                                                        app.doSave().then((result) => {
-                                                            // Close our connection.
-                                                            logger.log('verbose', req.query.appName + ': Close connection to engine...');
-                                                            g.session.close().then(() => {
-                                                                    logger.log('info', req.query.appName + ': Done duplicating, new app id=' + newAppId);
-                                                                    var jsonResult = {
-                                                                        result: "Done duplicating app",
-                                                                        newAppId: newAppId
-                                                                    }
-                                                                    res.send(jsonResult);
-                                                                    next();
+                                                                    app.doSave()
+                                                                        .then((result) => {
+                                                                            // Close our connection.
+                                                                            logger.log('verbose', req.query.appName + ': Close connection to engine...');
+                                                                            g.session.close()
+                                                                                .then(() => {
+                                                                                    logger.log('verbose', req.query.appName + ': Connection closed...');
+                                                                                    logger.log('info', req.query.appName + ': Done duplicating, new app id=' + newAppId);
+                                                                                    var jsonResult = {
+                                                                                        result: "Done duplicating app (new app was reloaded)",
+                                                                                        newAppId: newAppId
+                                                                                    }
+                                                                                    res.send(jsonResult);
+                                                                                    next();
+                                                                                })
+                                                                                .catch(err => {
+                                                                                    // Return error msg
+                                                                                    logger.log('error', 'Duplication error 1: ' + err);
+                                                                                    next(new errors.BadRequestError("Error occurred when closing newly created app."));
+                                                                                    return;
+                                                                                })
+                                                                        })
                                                                 })
                                                                 .catch(err => {
                                                                     // Return error msg
-                                                                    logger.log('error', 'Duplication error 1: ' + err);
-                                                                    next(new errors.BadRequestError("Error occurred when closing newly created app."));
+                                                                    logger.log('error', 'Duplication error (during reload): ' + err);
+                                                                    next(new errors.BadRequestError("Error occurred when reloading newly created app."));
                                                                     return;
                                                                 })
-                                                            logger.log('verbose', req.query.appName + ': Connection closed...');
-                                                        })
+                                                        } else {
+                                                            logger.log('verbose', req.query.appName + ': App reloading disabled - skipping.');
+                                                            app.doSave()
+                                                                .then((result) => {
+                                                                    // Close our connection.
+                                                                    logger.log('verbose', req.query.appName + ': Close connection to engine...');
+                                                                    g.session.close()
+                                                                        .then(() => {
+                                                                            logger.log('verbose', req.query.appName + ': Connection closed...');
+                                                                            logger.log('info', req.query.appName + ': Done duplicating, new app id=' + newAppId);
+                                                                            var jsonResult = {
+                                                                                result: "Done duplicating app (new app was not reloaded)",
+                                                                                newAppId: newAppId
+                                                                            }
+                                                                            res.send(jsonResult);
+                                                                            next();
+                                                                        })
+                                                                        .catch(err => {
+                                                                            // Return error msg
+                                                                            logger.log('error', 'Duplication error 1: ' + err);
+                                                                            next(new errors.BadRequestError("Error occurred when closing newly created app."));
+                                                                            return;
+                                                                        })
+                                                                })
+
+                                                            var jsonResult = {
+                                                                result: "Done duplicating app (new app was not reloaded)",
+                                                                newAppId: newAppId
+                                                            }
+                                                            res.send(jsonResult);
+                                                            next();
+                                                        }
+
                                                     })
                                                     .catch(err => {
                                                         // Return error msg
@@ -382,39 +426,60 @@ function respondDuplicateKeepScript(req, res, next) {
                             }),
                         }
 
-                        enigma.create(configEnigma).open().then((global) => {
+                        enigma.create(configEnigma).open()
+                            .then((global) => {
                                 const g = global;
 
                                 // Connect to engine
                                 logger.log('verbose', req.query.appName + ': Connecting to engine...');
 
-                                g.openDoc(newAppId).then((app) => {
+                                g.openDoc(newAppId)
+                                    .then((app) => {
                                         // Do a reload of the new app?
                                         if (reloadNewApp) {
-                                            logger.log('verbose', req.query.appName + ': Reload app...');
-                                            app.doReload();
+                                            logger.log('verbose', req.query.appName + ': Reloading app (might take a while, depending on the app)...');
+                                            app.doReload()
+                                                .then((result) => {
+                                                    logger.log('verbose', req.query.appName + ': App reloaded.');
+
+                                                    app.doSave()
+                                                        .then((result) => {
+                                                            // Close our connection.
+                                                            logger.log('verbose', req.query.appName + ': Close connection to engine...');
+                                                            g.session.close()
+                                                                .then(() => {
+                                                                    logger.log('verbose', req.query.appName + ': Connection closed...');
+                                                                    logger.log('info', req.query.appName + ': Done duplicating, new app id=' + newAppId);
+                                                                    var jsonResult = {
+                                                                        result: "Done duplicating app (new app was reloaded)",
+                                                                        newAppId: newAppId
+                                                                    }
+                                                                    res.send(jsonResult);
+                                                                    next();
+                                                                })
+                                                                .catch(err => {
+                                                                    // Return error msg
+                                                                    logger.log('error', 'Duplication error 1: ' + err);
+                                                                    next(new errors.BadRequestError("Error occurred when closing newly created app."));
+                                                                    return;
+                                                                })
+                                                        })
+                                                })
+                                                .catch(err => {
+                                                    // Return error msg
+                                                    logger.log('error', 'Duplication error (during reload): ' + err);
+                                                    next(new errors.BadRequestError("Error occurred when reloading newly created app."));
+                                                    return;
+                                                })
                                         } else {
                                             logger.log('verbose', req.query.appName + ': App reloading disabled - skipping.');
+                                            var jsonResult = {
+                                                result: "Done duplicating app (new app was not reloaded)",
+                                                newAppId: newAppId
+                                            }
+                                            res.send(jsonResult);
+                                            next();
                                         }
-
-                                        // Close our connection.
-                                        logger.log('verbose', req.query.appName + ': Close connection to engine...');
-                                        g.session.close().then(() => {
-                                                logger.log('info', req.query.appName + ': Done duplicating, new app id=' + newAppId);
-                                                var jsonResult = {
-                                                    result: "Done duplicating app",
-                                                    newAppId: newAppId
-                                                }
-                                                res.send(jsonResult);
-                                                next();
-                                            })
-                                            .catch(err => {
-                                                // Return error msg
-                                                logger.log('error', 'Duplication error 1: ' + err);
-                                                next(new errors.BadRequestError("Error occurred when closing newly created app."));
-                                                return;
-                                            })
-                                        logger.log('verbose', req.query.appName + ': Connection closed...');
                                     })
                                     .catch(err => {
                                         // Return error msg
