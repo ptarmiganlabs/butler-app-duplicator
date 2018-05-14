@@ -4,7 +4,7 @@
   "description": "Node.js app for duplicating and customising Qlike Sense apps",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./test/test.js && mocha ./test/test.js --reporter markdown > ./test/testresult.md"
   },
   "author": "Göran Sander",
   "license": "ISC",
@@ -20,5 +20,10 @@
     "restify-errors": "^6.0.0",
     "winston": "^2.3.0",
     "ws": "^5.1.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.1.1",
+    "supertest": "^3.1.0"
   }
 }
