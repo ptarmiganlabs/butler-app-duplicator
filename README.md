@@ -1,7 +1,7 @@
 
 # App duplicator for Qlik Sense
 [![Known Vulnerabilities](https://snyk.io/test/github/mountaindude/sense-template-app-duplicate/badge.svg)](https://snyk.io/test/github/mountaindude/sense-template-app-duplicate)  
-[![NSP Status](https://nodesecurity.io/orgs/ptarmiganlabscom/projects/fd47ee20-3874-4aab-9a6d-c8ac5106f03e/badge)](https://nodesecurity.io/orgs/ptarmiganlabscom/projects/fd47ee20-3874-4aab-9a6d-c8ac5106f03e)    
+§  
   
 <BR>
 
@@ -202,6 +202,17 @@ templateAppId: string
 ownerUserId: string
 ```
 
+## Tests
+The project comes with a bundled npm test suite, built using Mocha, Supertest and Chai.   
+Start the tests by running
+
+```
+npm test
+```
+
+in the main project directory. This will run the test suite and create a test report like [this one](./test/testresult.md). 
 
 ## Version history
-1.2 Changed to YAML config file, updated module dependencies to latest version, added new config options for port and engine version.
+2.2 Switched to using latest Enigma.js (v2). Added Mocha/Supertest test cases.   
+
+2.1 Changed to YAML config file, updated module dependencies to latest version, added new config options for port and engine version.
