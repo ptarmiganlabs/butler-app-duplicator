@@ -13,7 +13,7 @@
     "enigma.js": "^2.2.1",
     "js-yaml": "^3.11.0",
     "json-query": "^2.2.0",
-    "qrs-interact": "^3.0.0",
+    "qrs-interact": "^3.0.1",
     "request": "^2.82.0",
     "restify": "^5.2.1",
     "restify-cors-middleware": "^1.1.0",
