@@ -1,8 +1,8 @@
 
 # App duplicator for Qlik Sense
-[![Known Vulnerabilities](https://snyk.io/test/github/mountaindude/sense-template-app-duplicate/badge.svg)](https://snyk.io/test/github/mountaindude/sense-template-app-duplicate)  
-§  
-  
+[![NSP Status](https://nodesecurity.io/orgs/ptarmiganlabscom/projects/fd47ee20-3874-4aab-9a6d-c8ac5106f03e/badge)](https://nodesecurity.io/orgs/ptarmiganlabscom/projects/fd47ee20-3874-4aab-9a6d-c8ac5106f03e)
+
+
 <BR>
 
 
