@@ -5,7 +5,6 @@
 
 <BR>
 
-
 ![Butler app duplicator](doc/butler app duplicator.png "Butler app duplicator")  
 <BR>    
   
