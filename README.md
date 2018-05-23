@@ -5,7 +5,7 @@
 
 <BR>
 
-![Butler app duplicator](doc/butler app duplicator.png)  
+![Butler app duplicator](doc/butler_app_duplicator.png)  
 <BR>    
   
 Node.js server for handling back-end tasks related to creating new Sense apps, using existing apps as templates
