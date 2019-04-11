@@ -2,7 +2,7 @@
 var d = [];
 var s;
 
-var duplicatorService = 'https://localhost:8001';
+var duplicatorService = 'http://localhost:8001';
 
 var app = new Vue({
     el: "#app",
@@ -102,6 +102,7 @@ notie.alert({ type: 'info', text: ' <i class="fa fa-spinner fa-spin" style="font
 
 var jqxhr1 = $.getJSON(duplicatorService + '/getTemplateList', {}, function (data) {
     $.each(data, function (index, element) {
+        // console.log(data);
         d.push({ value: element.id, text: element.name, description: element.description });
     });
 

@@ -5,45 +5,69 @@ const util = require('util')
 var qrsInteract = require('qrs-interact');
 var request = require('request');
 var restify = require('restify');
-var winston = require('winston');
-var config = require('config');
+    const winston = require('winston');
+require('winston-daily-rotate-file');
+const config = require('config');
+const path = require('path');
+
 
 const corsMiddleware = require('restify-cors-middleware')
 var errors = require('restify-errors');
 
+
+
+// Get app version from package.json file
 var appVersion = require('./package.json').version;
 
 
-// Set up Winston logger, logging both to console and different disk files
-var logger = new(winston.Logger)({
-    transports: [
-        new(winston.transports.Console)({
-            name: 'console_log',
-            'timestamp': true,
-            'colorize': true
-        }),
-        new(winston.transports.File)({
-            name: 'file_info',
-            filename: config.get('logDirectory') + '/info.log',
-            level: 'info'
-        }),
-        new(winston.transports.File)({
-            name: 'file_verbose',
-            filename: config.get('logDirectory') + '/verbose.log',
-            level: 'verbose'
-        }),
-        new(winston.transports.File)({
-            name: 'file_error',
-            filename: config.get('logDirectory') + '/error.log',
-            level: 'error'
+// Set up logger with timestamps and colors, and optional logging to disk file
+const logTransports = [];
+
+logTransports.push(
+    new winston.transports.Console({
+        name: 'console',
+        level: config.get('logLevel'),
+        format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.colorize(),
+            winston.format.simple(),
+            winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+        )
+    })
+);
+
+
+if (config.get('fileLogging')) {
+    logTransports.push(
+        new(winston.transports.DailyRotateFile)({
+            dirname: path.join(__dirname, config.get('logDirectory')),
+            filename: 'butler-app-duplicator.%DATE%.log',
+            level: config.get('logLevel'),
+            datePattern: 'YYYY-MM-DD',
+            maxFiles: '30d'
         })
-    ]
+    );
+}
+
+
+logger = winston.createLogger({
+    transports: logTransports,
+    format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`)
+    )
 });
 
-// Set default log level
-logger.transports.console_log.level = config.get('defaultLogLevel');
 
-logger.log('info', 'Starting Qlik Sense template app duplicator.');
+// Function to get current logging level
+getLoggingLevel = () => {
+    return logTransports.find(transport => {
+        return transport.name == 'console';
+    }).level;
+}
+
+
+logger.info(`Starting Qlik Sense template app duplicator.`);
 
 
 // Read certificates
@@ -64,7 +88,7 @@ const engineHost = config.get('host');
 const enginePort = 4747;
 
 // Set up Sense repository service configuration
-var configQRS = {
+const configQRS = {
     hostname: config.get('host'),
     certificates: {
         certFile: config.get('clientCertPath'),
@@ -72,12 +96,21 @@ var configQRS = {
     }
 }
 
-var restServer = restify.createServer({
-    name: 'Qlik Sense app duplicator',
-    version: appVersion,
-    certificate: fs.readFileSync(config.get('sslCertPath')),
-    key: fs.readFileSync(config.get('sslCertKeyPath'))
-});
+let restServer;
+if (config.get('httpsEnable')) {
+    restServer = restify.createServer({
+        name: 'Qlik Sense app duplicator',
+        version: appVersion,
+        certificate: fs.readFileSync(config.get('sslCertPath')),
+        key: fs.readFileSync(config.get('sslCertKeyPath'))
+    });
+} else {
+    restServer = restify.createServer({
+        name: 'Qlik Sense app duplicator',
+        version: appVersion
+    });
+}
+
 
 
 // Enable parsing of http parameters
@@ -99,10 +132,36 @@ restServer.get('/duplicateNewScript', respondDuplicateNewScript);
 restServer.get('/duplicateKeepScript', respondDuplicateKeepScript);
 restServer.get('/getTemplateList', respondGetTemplateList);
 
-
 // Start the server
 restServer.listen(config.get('restAPIPort'), function () {
-    console.log('%s listening at %s', restServer.name, restServer.url);
+    logger.info(`${restServer.name} listening at ${restServer.url}`);
+});
+
+
+
+// Set up Docker healthcheck server
+// Create restServer object
+var restServerDockerHealth = restify.createServer({
+    name: 'Docker healthcheck for Butler-SOS',
+    version: appVersion
+});
+
+// Enable parsing of http parameters
+restServerDockerHealth.use(restify.plugins.queryParser());
+
+restServerDockerHealth.get({
+    path: '/',
+    flags: 'i'
+}, (req, res, next) => {
+    logger.verbose(`Docker healthcheck API endpoint called.`);
+
+    res.send(0);
+    next();
+});
+
+// Start Docker healthcheck REST server on port 12398
+restServerDockerHealth.listen(12398, function () {
+    logger.info(`Docker healthcheck server now listening on ${restServerDockerHealth.url}`);
 });
 
 
@@ -120,7 +179,7 @@ function respondGetTemplateList(req, res, next) {
 
     var appList = [];
 
-    qrsInteractInstance.Get("app/full?filter=@AppIsTemplate eq 'Yes'")
+    qrsInteractInstance.Get(`app/full?filter=@${config.get('customPropertyName')} eq 'Yes'`)
         .then(result => {
             logger.log('debug', 'result=' + result);
 
@@ -193,7 +252,7 @@ function respondDuplicateNewScript(req, res, next) {
                     result.body.customProperties.forEach(function (item) {
                         logger.log('debug', 'Item: ' + item);
 
-                        if (item.definition.name == 'AppIsTemplate' && item.value == 'Yes') {
+                        if (item.definition.name == config.get('customPropertyName') && item.value == 'Yes') {
                             appIsTemplate = true;
                         }
                     })
@@ -385,13 +444,13 @@ function respondDuplicateKeepScript(req, res, next) {
     // Make sure the app to be duplicated really is a template
     qrsInteractInstance.Get('app/' + req.query.templateAppId)
         .then(result => {
-            logger.log('verbose', req.query.templateAppId + 'Testing if specifiec template app really is a template');
+            logger.log('verbose', req.query.templateAppId + 'Making sure the specified template app really is a template');
 
             var appIsTemplate = false;
             result.body.customProperties.forEach(function (item) {
                 logger.log('debug', 'Item: ' + item);
 
-                if (item.definition.name == 'AppIsTemplate' && item.value == 'Yes') {
+                if (item.definition.name == config.get('customPropertyName') && item.value == 'Yes') {
                     appIsTemplate = true;
                 }
             })
