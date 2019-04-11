@@ -40,7 +40,8 @@ logTransports.push(
 if (config.get('fileLogging')) {
     logTransports.push(
         new(winston.transports.DailyRotateFile)({
-            dirname: path.join(__dirname, config.get('logDirectory')),
+            // dirname: path.join(__dirname, config.get('logDirectory')),
+            dirname: path.join(__dirname, 'log'),
             filename: 'butler-app-duplicator.%DATE%.log',
             level: config.get('logLevel'),
             datePattern: 'YYYY-MM-DD',
