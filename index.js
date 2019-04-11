@@ -402,6 +402,12 @@ function respondDuplicateNewScript(req, res, next) {
                                                                                             return;
                                                                                         })
                                                                                 })
+                                                                                .catch(err => {
+                                                                                    // Return error msg
+                                                                                    logger.error('Save error: ' + err);
+                                                                                    next(new errors.BadRequestError("Error occurred when saving newly created app."));
+                                                                                    return;
+                                                                                })
                                                                         })
                                                                         .catch(err => {
                                                                             // Return error msg
@@ -433,13 +439,12 @@ function respondDuplicateNewScript(req, res, next) {
                                                                                     return;
                                                                                 })
                                                                         })
-
-                                                                    var jsonResult = {
-                                                                        result: "Done duplicating app (new app was not reloaded)",
-                                                                        newAppId: newAppId
-                                                                    }
-                                                                    res.send(jsonResult);
-                                                                    next();
+                                                                        .catch(err => {
+                                                                            // Return error msg
+                                                                            logger.error('Save error: ' + err);
+                                                                            next(new errors.BadRequestError("Error occurred when saving newly created app."));
+                                                                            return;
+                                                                        })
                                                                 }
 
                                                             })
