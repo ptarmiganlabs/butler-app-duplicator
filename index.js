@@ -5,7 +5,7 @@ const util = require('util')
 var qrsInteract = require('qrs-interact');
 var request = require('request');
 var restify = require('restify');
-    const winston = require('winston');
+const winston = require('winston');
 require('winston-daily-rotate-file');
 const config = require('config');
 const path = require('path');
@@ -69,6 +69,9 @@ getLoggingLevel = () => {
 
 
 logger.info(`Starting Qlik Sense template app duplicator.`);
+
+// Variable to hold ID of custom property that identify an app as being created from a template
+let customProperyCreatedFromTemplateId = '';
 
 
 // Read certificates
@@ -164,6 +167,72 @@ restServerDockerHealth.get({
 restServerDockerHealth.listen(12398, function () {
     logger.info(`Docker healthcheck server now listening on ${restServerDockerHealth.url}`);
 });
+
+
+
+// Create custom property (unless it already exists) used to identify that an app was created from a template
+let qrsInstanceCustomPropertyCheck = new qrsInteract(configQRS);
+
+
+qrsInstanceCustomPropertyCheck.Get('custompropertydefinition')
+    .then(result => {
+        let customProperyCreatedFromTemplateExists = false;
+        result.body.forEach(item => {
+            logger.debug(`Custom property found in repository: ${item.name}`);
+
+            if (item.name == config.get('customPropertyCreatedFromTemplate')) {
+                customProperyCreatedFromTemplateExists = true;
+                customProperyCreatedFromTemplateId = item.id;
+                logger.debug(`ID of app-is-created-from-template custom property: ${item.id}`);
+            }
+        })
+
+        return customProperyCreatedFromTemplateExists;
+    })
+    .then(customPropertyExists => {
+        if (customPropertyExists == false) {
+            // The needed custom property does not exist. Create it.
+            logger.verbose(`Creating new custom property: ${config.get('customPropertyCreatedFromTemplate')}`);
+            qrsInstanceCustomPropertyCheck.Post(
+                    'custompropertydefinition', {
+                        name: config.get('customPropertyCreatedFromTemplate'),
+                        choiceValues: ["Yes"],
+                        description: "When set to yes, the associated app was created from a template app",
+                        objectTypes: ["App"],
+                        valueType: "Text",
+                        privileges: null
+                    },
+                    'json')
+                .then(result => {
+                    if (result.statusCode == 201) {
+                        logger.verbose(`Success - new custom property created: ${config.get('customPropertyCreatedFromTemplate')}`);
+
+                        customProperyCreatedFromTemplateId = result.body.id;
+                        logger.debug(`ID of app-is-created-from-template custom property: ${result.body.id}`);
+                    }
+                })
+        } else {
+            logger.verbose(`Needed custom property already exsits: ${config.get('customPropertyCreatedFromTemplate')}`);
+        }
+    });
+
+logger.debug(`Done checking custom property`);
+
+
+// let appIsTemplate = false;
+// result.body.customProperties.forEach(function (item) {
+//     logger.log('debug', 'Item: ' + item);
+
+//     if (item.definition.name == config.get('customPropertyName') && item.value == 'Yes') {
+//         appIsTemplate = true;
+//     }
+// })
+
+// logger.log('verbose', req.query.templateAppId + 'App is template: ' + appIsTemplate);
+
+
+// CreatedFromAppTemplate
+
 
 
 
@@ -270,7 +339,13 @@ function respondDuplicateNewScript(req, res, next) {
                 .then(result => {
                     // result == true if the provided app ID belongs to a template app
                     if (result) {
-                        qrsInteractInstance.Post('app/' + req.query.templateAppId + '/copy?name=' + req.query.appName, {}, 'json')
+                        qrsInteractInstance.Post(
+                                'app/' + req.query.templateAppId + '/copy?name=' + req.query.appName, {
+                                    customProperties: [{
+                                        "id": customProperyCreatedFromTemplateId
+                                    }],
+                                },
+                                'json')
                             .then(result => {
                                 logger.log('info', 'App created with ID %s, using %s as a template ', result.body.id, req.query.templateAppId);
                                 newAppId = result.body.id;
@@ -468,7 +543,14 @@ function respondDuplicateKeepScript(req, res, next) {
         .then(result => {
             // result == true if the provided app ID belongs to a template app
             if (result) {
-                qrsInteractInstance.Post('app/' + req.query.templateAppId + '/copy?name=' + req.query.appName, {}, 'json').then(result => {
+                qrsInteractInstance.Post(
+                        'app/' + req.query.templateAppId + '/copy?name=' + req.query.appName, {
+                            customProperties: [{
+                                "id": customProperyCreatedFromTemplateId
+                            }],
+                        },
+                        'json')
+                    .then(result => {
                         logger.log('info', 'App created with ID %s, using %s as a template ', result.body.id, req.query.templateAppId);
                         newAppId = result.body.id;
 
