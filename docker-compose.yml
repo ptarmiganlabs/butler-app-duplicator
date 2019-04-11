@@ -1,0 +1,35 @@
+version: "3"
+services:
+  butler-app-duplicator:
+    image: ptarmiganlabs/butler-app-duplicator:latest
+    restart: always
+    container_name: butler-app-duplicator
+    ports:
+      - "8001:8001"
+    volumes:
+      - "./config:/nodeapp/config"
+      - "./logs:/nodeapp/logs"
+    environment:
+      - "NODE_ENV=production"
+    logging:
+      driver: json-file
+    networks:
+      - butler-app-duplicator
+
+
+  butler-app-duplicator-nginx:
+    image: butler-app-duplicator-nginx
+    build: ./www/conf/
+    restart: always
+    container_name: butler-app-duplicator-nginx
+    ports:
+      - "89:80"
+    volumes:
+      - ./www/src/:/usr/share/nginx/html/
+    networks:
+      - butler-app-duplicator
+
+
+networks:
+  butler-app-duplicator:
+    driver: bridge
