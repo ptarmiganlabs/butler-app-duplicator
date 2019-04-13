@@ -1,7 +1,7 @@
 # Rename this file to default.yaml, and fill in data as needed below.
 
 # Logging configuration
-logLevel: debug          # Log level. Possible log levels are silly, debug, verbose, info, warn, error
+logLevel: info          # Log level. Possible log levels are silly, debug, verbose, info, warn, error
 fileLogging: false       # true/false to enable/disable logging to disk file
 logDirectory: log      # Subdirectory where log files are stored (no trailing / )
 
@@ -16,7 +16,6 @@ clientCertCAPath: /path/to/client/cert//root.pem
 # clientCertCAPath: /nodeapp/config/certificate/root.pem
 
 
-
 # Enable https for the app duplication server (true/false)
 httpsEnable: false      
 # Paths to ssl certificate and key used to secure the communication to the duplicate server. Can be pem or pvk/cer
@@ -29,9 +28,6 @@ loadScriptURL: https://raw.githubusercontent.com/mountaindude/testdata/master/te
 # Sense server we should connect to
 host: yourhost.company.com
 
-# Is connection to Sense engine secure (https)?
-isSecure: true
-
 # Custom property used to identify template apps
 customPropertyName: AppIsTemplate
 
@@ -43,7 +39,7 @@ customPropertyCreatedFromTemplate: CreatedFromAppTemplate
 senseUserDirectory: MYCOMPANY
 
 # Qlik Associative Engine version to use with Enigma.js
-engineVersion: 12.20.0
+engineVersion: 12.170.2
 
 # Port on which the app duplicator's REST API will listen
 restAPIPort: 8001 
