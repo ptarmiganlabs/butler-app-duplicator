@@ -3,7 +3,6 @@
 
 A microservice for handling back-end tasks related to creating new Sense apps, using existing apps as templates.
 
-
 ## What's new
 
 Please see the [change log](https://github.com/ptarmiganlabs/butler-app-duplicator/blob/master/changelog.md) for a comprehensive list of changes.
@@ -46,7 +45,7 @@ Their apps will also be of higher quality than if they had to start over from sc
 Experienced developers are often faced with similar challenges over and over again.  
 Extracting data into a QVD layer is a classic example - these apps often look about the same over and over again.  
 Creating a template out of such an app, that template can then be used every time a QVD extractor app is needed.  
-Each such app will be structured the same way, do error reporting the same way, use the same variable names etc.    
+Each such app will be structured the same way, do error reporting the same way, use the same variable names etc.  
 The new app usually still needs to be customised to the exact task at hand - but in general the result is simply better, more readable code.
 
 * **Better odds of apps aligning with corporate coding standards**  
@@ -84,7 +83,7 @@ The app duplicator tool is intended to be used in a Sense Enterprise environment
 
 The tool can be run in either of two ways: As a Docker container or as a native Node.js application. The Docker alternative is by for the best and highly recommended.
 
-There must be network connectivity between the server where the app duplicator runs and a server where the Qlik Sense Repository Service runs. 
+There must be network connectivity between the server where the app duplicator runs and a server where the Qlik Sense Repository Service runs.
 
 ### General installation
 
@@ -92,15 +91,15 @@ There must be network connectivity between the server where the app duplicator r
 * Edit the `production.yaml` file to meet your specific environment. See below for details.
 * [Export certificates](https://help.qlik.com/en-US/sense/February2019/Subsystems/ManagementConsole/Content/Sense_QMC/export-certificates.htm) from Qlik Sense QMC, then place them in the ./config/certificate folder under Butler SOS' main folder.
 * If you are planning to use the web UI, review the HTML and Javascript files. For example
-	* `./www/src/index.html`: Update feedback link (around line 38). By default it points to the issue creation dialog in this repository, which is probably not what you want
-	* `./www/src/js/duplicate-app.js`): Update duplicatorService variable the server where the app duplication service exposes its REST API.
-	*  `./www/src/js/duplicate-app.js`): Enter the FQDN or IP of your Sense server (needed for the link to the newly created apps) around line 45.
+  * `./www/src/index.html`: Update feedback link (around line 38). By default it points to the issue creation dialog in this repository, which is probably not what you want
+  * `./www/src/js/duplicate-app.js`): Update duplicatorService variable the server where the app duplication service exposes its REST API.
+  * `./www/src/js/duplicate-app.js`): Enter the FQDN or IP of your Sense server (needed for the link to the newly created apps) around line 45.
 
 ### Running as a Docker container
 
 The `docker-compose.yml` file will create two containers: `butler-app-duplicator` and `butler-app-duplicator-nginx`. The former is the the service that talks to Qlik Sense and offers a REST API through which app duplication can be performed, while the latter is a bare-bones nginx server used to serve the included web UI.
 
-The docker-compose file should in most cases work out of the box, but is also very flexible if needed. 
+The docker-compose file should in most cases work out of the box, but is also very flexible if needed.
 
 General steps to get started with the Docker image:
 
@@ -124,8 +123,7 @@ Creating and starting the Docker containers might look like this:
 
 When starting the service in debug mode you might see something like this:
 
-![Img](./img/running-native-node-1.png "") 
-
+![Img](./img/running-native-node-1.png "")
 
 #### Using the web UI
 
@@ -282,15 +280,6 @@ templateAppId: string
 ownerUserId: string
 ```
 
-### Tests
+## Security / Disclosure
 
-The project comes with a bundled npm test suite, built using Mocha, Supertest and Chai.
-Start the tests by running
-
-```bash
-npm test
-```
-
-in the main project directory. This will run the test suite and create a test report like [this one](./test/testresult.md).
-
-
+If you discover any important bug with Butler App Duplicator that may pose a security problem, please disclose it confidentially to security@ptarmiganlabs.com first, so that it can be assessed and hopefully fixed prior to being exploited. Please do not raise GitHub issues for security-related doubts or problems.

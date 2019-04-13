@@ -4,18 +4,30 @@
   "description": "Node.js app for duplicating and customising Qlike Sense apps",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./test/test.js && mocha ./test/test.js --reporter markdown > ./test/testresult.md"
+    "test": "node_modules/jshint/bin/jshint index.js"
   },
+  "keywords": [
+    "butler",
+    "butler-app-duplicator",
+    "senseops",
+    "devops",
+    "qliksense"
+  ],
   "author": "Göran Sander",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ptarmiganlabs/butler-app-duplicator.git"
   },
+  "bugs": {
+    "url": "https://github.com/ptarmiganlabs/butler-app-duplicator/issues"
+  },
+  "homepage": "https://github.com/ptarmiganlabs/butler-app-duplicator#readme",
   "dependencies": {
     "config": "^3.1.0",
     "enigma.js": "^2.4.0",
     "js-yaml": "^3.13.1",
+    "jshint": "^2.10.2",
     "json-query": "^2.2.0",
     "qrs-interact": "^3.0.1",
     "request": "^2.88.0",
