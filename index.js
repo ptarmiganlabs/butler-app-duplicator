@@ -1,7 +1,7 @@
 const enigma = require('enigma.js');
 const WebSocket = require('ws');
 const fs = require('fs');
-const util = require('util')
+const util = require('util');
 var qrsInteract = require('qrs-interact');
 var request = require('request');
 var restify = require('restify');
@@ -11,7 +11,7 @@ const config = require('config');
 const path = require('path');
 
 
-const corsMiddleware = require('restify-cors-middleware')
+const corsMiddleware = require('restify-cors-middleware');
 var errors = require('restify-errors');
 
 
@@ -65,7 +65,7 @@ getLoggingLevel = () => {
     return logTransports.find(transport => {
         return transport.name == 'console';
     }).level;
-}
+};
 
 
 logger.info(`Starting Qlik Sense template app duplicator.`);
@@ -101,7 +101,7 @@ const configQRS = {
         certFile: config.get('clientCertPath'),
         keyFile: config.get('clientCertKeyPath'),
     }
-}
+};
 
 let restServer;
 if (config.get('httpsEnable')) {
@@ -128,10 +128,10 @@ restServer.use(restify.plugins.queryParser());
 const cors = corsMiddleware({
     preflightMaxAge: 5, //Optional
     origins: ['*']
-})
+});
 
-restServer.pre(cors.preflight)
-restServer.use(cors.actual)
+restServer.pre(cors.preflight);
+restServer.use(cors.actual);
 
 
 // Set up endpoints for REST server
@@ -187,7 +187,7 @@ qrsInstanceCustomPropertyCheck1.Get('custompropertydefinition')
                 customProperyAppIsTemplateId = item.id;
                 logger.debug(`ID of app-is-template custom property: ${item.id}`);
             }
-        })
+        });
 
         return customProperyAppIsTemplateExists;
     })
@@ -212,7 +212,7 @@ qrsInstanceCustomPropertyCheck1.Get('custompropertydefinition')
                         customProperyCreatedFromTemplateId = result.body.id;
                         logger.debug(`ID of app-is-created-from-template custom property: ${result.body.id}`);
                     }
-                })
+                });
         } else {
             logger.verbose(`Needed custom property already exsits: ${config.get('customPropertyName')}`);
         }
@@ -237,7 +237,7 @@ qrsInstanceCustomPropertyCheck2.Get('custompropertydefinition')
                 customProperyCreatedFromTemplateId = item.id;
                 logger.debug(`ID of app-is-created-from-template custom property: ${item.id}`);
             }
-        })
+        });
 
         return customProperyCreatedFromTemplateExists;
     })
@@ -262,7 +262,7 @@ qrsInstanceCustomPropertyCheck2.Get('custompropertydefinition')
                         customProperyCreatedFromTemplateId = result.body.id;
                         logger.debug(`ID of app-is-created-from-template custom property: ${result.body.id}`);
                     }
-                })
+                });
         } else {
             logger.verbose(`Needed custom property already exsits: ${config.get('customPropertyCreatedFromTemplate')}`);
         }
@@ -308,7 +308,7 @@ function respondGetTemplateList(req, res, next) {
             // Return error msg
             logger.error('Get templates: ' + err);
             res.send(err);
-        })
+        });
 
     next();
 }
@@ -359,7 +359,7 @@ function respondDuplicateNewScript(req, res, next) {
                         if (item.definition.name == config.get('customPropertyName') && item.value == 'Yes') {
                             appIsTemplate = true;
                         }
-                    })
+                    });
 
                     logger.verbose(req.query.templateAppId + ': App is template: ' + appIsTemplate);
 
@@ -442,7 +442,8 @@ function respondDuplicateNewScript(req, res, next) {
                                                                                             var jsonResult = {
                                                                                                 result: "Done duplicating app (new app was reloaded)",
                                                                                                 newAppId: newAppId
-                                                                                            }
+                                                                                            };
+
                                                                                             res.send(jsonResult);
                                                                                             next();
                                                                                         })
@@ -451,21 +452,21 @@ function respondDuplicateNewScript(req, res, next) {
                                                                                             logger.error('Duplication error 1: ' + err);
                                                                                             next(new errors.BadRequestError("Error occurred when closing newly created app."));
                                                                                             return;
-                                                                                        })
+                                                                                        });
                                                                                 })
                                                                                 .catch(err => {
                                                                                     // Return error msg
                                                                                     logger.error('Save error: ' + err);
                                                                                     next(new errors.BadRequestError("Error occurred when saving newly created app."));
                                                                                     return;
-                                                                                })
+                                                                                });
                                                                         })
                                                                         .catch(err => {
                                                                             // Return error msg
                                                                             logger.error('Duplication error (during reload): ' + err);
                                                                             next(new errors.BadRequestError("Error occurred when reloading newly created app."));
                                                                             return;
-                                                                        })
+                                                                        });
                                                                 } else {
                                                                     logger.verbose(req.query.appName + ': App reloading disabled - skipping.');
                                                                     app.doSave()
@@ -479,7 +480,8 @@ function respondDuplicateNewScript(req, res, next) {
                                                                                     var jsonResult = {
                                                                                         result: "Done duplicating app (new app was not reloaded)",
                                                                                         newAppId: newAppId
-                                                                                    }
+                                                                                    };
+
                                                                                     res.send(jsonResult);
                                                                                     next();
                                                                                 })
@@ -488,14 +490,14 @@ function respondDuplicateNewScript(req, res, next) {
                                                                                     logger.error('Duplication error 1: ' + err);
                                                                                     next(new errors.BadRequestError("Error occurred when closing newly created app."));
                                                                                     return;
-                                                                                })
+                                                                                });
                                                                         })
                                                                         .catch(err => {
                                                                             // Return error msg
                                                                             logger.error('Save error: ' + err);
                                                                             next(new errors.BadRequestError("Error occurred when saving newly created app."));
                                                                             return;
-                                                                        })
+                                                                        });
                                                                 }
                                                             })
                                                             .catch(err => {
@@ -543,7 +545,7 @@ function respondDuplicateNewScript(req, res, next) {
         } else {
             logger.error('Duplication error 8: Failed retrieving script from Git');
         }
-    })
+    });
 }
 
 
@@ -584,7 +586,7 @@ function respondDuplicateKeepScript(req, res, next) {
                 if (item.definition.name == config.get('customPropertyName') && item.value == 'Yes') {
                     appIsTemplate = true;
                 }
-            })
+            });
 
             logger.verbose(req.query.templateAppId + 'App is template: ' + appIsTemplate);
 
@@ -634,7 +636,7 @@ function respondDuplicateKeepScript(req, res, next) {
                                         },
                                         rejectUnauthorized: false
                                     }),
-                                }
+                                };
 
                                 enigma.create(configEnigma).open()
                                     .then((global) => {
@@ -663,7 +665,8 @@ function respondDuplicateKeepScript(req, res, next) {
                                                                             var jsonResult = {
                                                                                 result: "Done duplicating app (new app was reloaded)",
                                                                                 newAppId: newAppId
-                                                                            }
+                                                                            };
+
                                                                             res.send(jsonResult);
                                                                             next();
                                                                         })
@@ -672,21 +675,21 @@ function respondDuplicateKeepScript(req, res, next) {
                                                                             logger.error('Duplication error 1: ' + err);
                                                                             next(new errors.BadRequestError("Error occurred when closing newly created app."));
                                                                             return;
-                                                                        })
-                                                                })
+                                                                        });
+                                                                });
                                                         })
                                                         .catch(err => {
                                                             // Return error msg
                                                             logger.error('Duplication error (during reload): ' + err);
                                                             next(new errors.BadRequestError("Error occurred when reloading newly created app."));
                                                             return;
-                                                        })
+                                                        });
                                                 } else {
                                                     logger.verbose(req.query.appName + ': App reloading disabled - skipping.');
                                                     var jsonResult = {
                                                         result: "Done duplicating app (new app was not reloaded)",
                                                         newAppId: newAppId
-                                                    }
+                                                    };
                                                     res.send(jsonResult);
                                                     next();
                                                 }
@@ -703,7 +706,7 @@ function respondDuplicateKeepScript(req, res, next) {
                                         logger.error('Duplication error 3: ' + err);
                                         next(new errors.BadRequestError("Error occurred when creating Enigma object."));
                                         return;
-                                    })
+                                    });
                             })
                             .catch(err => {
                                 // Return error msg
@@ -717,7 +720,7 @@ function respondDuplicateKeepScript(req, res, next) {
                         logger.error('Duplication error 5: ' + err);
                         next(new restify.BadRequestError("Error occurred when creating new app from template."));
                         return;
-                    })
+                    });
             }
         })
         .catch(err => {
@@ -726,6 +729,5 @@ function respondDuplicateKeepScript(req, res, next) {
             // res.send(err);
             next(new restify.BadRequestError("Error occurred when test app template status."));
             return;
-        })
-
+        });
 }
