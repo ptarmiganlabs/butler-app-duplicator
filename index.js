@@ -73,6 +73,9 @@ logger.info(`Starting Qlik Sense template app duplicator.`);
 // Variable to hold ID of custom property that identify an app as being created from a template
 let customProperyCreatedFromTemplateId = '';
 
+// Variable to hold ID of custom property that identify template apps
+let customProperyAppIsTemplateId = '';
+
 
 // Read certificates
 const client = fs.readFileSync(config.get('clientCertPath'));
@@ -170,11 +173,60 @@ restServerDockerHealth.listen(12398, function () {
 
 
 
+// Create custom property (unless it already exists) used to identify template apps
+let qrsInstanceCustomPropertyCheck1 = new qrsInteract(configQRS);
+
+qrsInstanceCustomPropertyCheck1.Get('custompropertydefinition')
+    .then(result => {
+        let customProperyAppIsTemplateExists = false;
+        result.body.forEach(item => {
+            logger.debug(`Custom property found in repository: ${item.name}`);
+
+            if (item.name == config.get('customPropertyCreatedFromTemplate')) {
+                customProperyAppIsTemplateExists = true;
+                customProperyAppIsTemplateId = item.id;
+                logger.debug(`ID of app-is-template custom property: ${item.id}`);
+            }
+        })
+
+        return customProperyAppIsTemplateExists;
+    })
+    .then(customPropertyExists => {
+        if (customPropertyExists == false) {
+            // The needed custom property does not exist. Create it.
+            logger.verbose(`Creating new custom property: ${config.get('customPropertyName')}`);
+            qrsInstanceCustomPropertyCheck1.Post(
+                    'custompropertydefinition', {
+                        name: config.get('customPropertyName'),
+                        choiceValues: ["Yes"],
+                        description: "When set to yes, the associated app will be used as a template app",
+                        objectTypes: ["App"],
+                        valueType: "Text",
+                        privileges: null
+                    },
+                    'json')
+                .then(result => {
+                    if (result.statusCode == 201) {
+                        logger.verbose(`Success - new custom property created: ${config.get('customPropertyName')}`);
+
+                        customProperyCreatedFromTemplateId = result.body.id;
+                        logger.debug(`ID of app-is-created-from-template custom property: ${result.body.id}`);
+                    }
+                })
+        } else {
+            logger.verbose(`Needed custom property already exsits: ${config.get('customPropertyName')}`);
+        }
+    });
+
+logger.verbose(`Done checking app-is-template custom property`);
+
+
+
+
 // Create custom property (unless it already exists) used to identify that an app was created from a template
-let qrsInstanceCustomPropertyCheck = new qrsInteract(configQRS);
+let qrsInstanceCustomPropertyCheck2 = new qrsInteract(configQRS);
 
-
-qrsInstanceCustomPropertyCheck.Get('custompropertydefinition')
+qrsInstanceCustomPropertyCheck2.Get('custompropertydefinition')
     .then(result => {
         let customProperyCreatedFromTemplateExists = false;
         result.body.forEach(item => {
@@ -193,7 +245,7 @@ qrsInstanceCustomPropertyCheck.Get('custompropertydefinition')
         if (customPropertyExists == false) {
             // The needed custom property does not exist. Create it.
             logger.verbose(`Creating new custom property: ${config.get('customPropertyCreatedFromTemplate')}`);
-            qrsInstanceCustomPropertyCheck.Post(
+            qrsInstanceCustomPropertyCheck2.Post(
                     'custompropertydefinition', {
                         name: config.get('customPropertyCreatedFromTemplate'),
                         choiceValues: ["Yes"],
@@ -216,7 +268,7 @@ qrsInstanceCustomPropertyCheck.Get('custompropertydefinition')
         }
     });
 
-logger.debug(`Done checking custom property`);
+logger.verbose(`Done checking app-is-created-from-template custom property`);
 
 
 
