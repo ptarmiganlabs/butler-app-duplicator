@@ -1,6 +1,10 @@
 # Do not store config file in git
 default.json
 default.yaml
+production.json
+production.yaml
+config/certificate
+*.pem
 
 # Logs
 log

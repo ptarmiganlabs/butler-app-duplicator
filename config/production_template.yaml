@@ -1,12 +1,23 @@
 # Rename this file to default.yaml, and fill in data as needed below.
 
-# Possible log levels are silly, debug, verbose, info, warn, error
-defaultLogLevel: info
+# Logging configuration
+logLevel: info          # Log level. Possible log levels are silly, debug, verbose, info, warn, error
+fileLogging: false       # true/false to enable/disable logging to disk file
+logDirectory: log      # Subdirectory where log files are stored (no trailing / )
 
 # Paths to client certificates to use when connecting to Sense server. Can be pem or pvk/cer
 clientCertPath: /path/to/client/cert/client.pem
 clientCertKeyPath: /path/to/client/cert/client_key.pem
+clientCertCAPath: /path/to/client/cert//root.pem
 
+# If running in a Docker container, the cert paths MUST be the following
+# clientCertPath: /nodeapp/config/certificate/client.pem
+# clientCertKeyPath: /nodeapp/config/certificate/client_key.pem
+# clientCertCAPath: /nodeapp/config/certificate/root.pem
+
+
+# Enable https for the app duplication server (true/false)
+httpsEnable: false      
 # Paths to ssl certificate and key used to secure the communication to the duplicate server. Can be pem or pvk/cer
 sslCertPath: /path/to/ssl/cert/client.cer
 sslCertKeyPath: /path/to/ssl/cert/client_key.pvk
@@ -17,21 +28,21 @@ loadScriptURL: https://raw.githubusercontent.com/mountaindude/testdata/master/te
 # Sense server we should connect to
 host: yourhost.company.com
 
-# Is connection to Sense engine secure (https)?
-isSecure: true
+# Custom property used to identify template apps
+customPropertyName: AppIsTemplate
+
+# Custom property used to identify that an app was created from a template 
+customPropertyCreatedFromTemplate: CreatedFromAppTemplate
 
 # Newly created apps will be assigned to specific users. Next config option specifies what user directory this user belongs to.
 # For example, if your Sense users full id looks like MYCOMPANY/username, MYCOMPANY would be listed below.
 senseUserDirectory: MYCOMPANY
 
 # Qlik Associative Engine version to use with Enigma.js
-engineVersion: 12.20.0
+engineVersion: 12.170.2
 
 # Port on which the app duplicator's REST API will listen
 restAPIPort: 8001 
-
-# Directory where log files are stored (no trailing / )
-logDirectory: /path/to/log/directory
 
 # Reload app after it has been created (true/false)
 reloadNewApp: false
