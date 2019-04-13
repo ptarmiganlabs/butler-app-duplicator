@@ -10,7 +10,7 @@ Please see the [change log](https://github.com/ptarmiganlabs/butler-app-duplicat
 
 Highlights in the most recent release are
 
-### v3.0
+### v3.0.0
 
 This is a major update, with most parts of the being refactored to work better and provide new features.
 
