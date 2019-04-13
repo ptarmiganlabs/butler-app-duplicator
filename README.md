@@ -111,9 +111,7 @@ General steps to get started with the Docker image:
 
 Creating and starting the Docker containers might look like this:
 
-
-
-
+![img](./img/running-docker-1.png "")
 
 ### Running as a native Node.js application
 
@@ -126,7 +124,7 @@ Creating and starting the Docker containers might look like this:
 
 When starting the service in debug mode you might see something like this:
 
- ![Img](./img/running-native-node-1.png "") 
+![Img](./img/running-native-node-1.png "") 
 
 
 #### Using the web UI
