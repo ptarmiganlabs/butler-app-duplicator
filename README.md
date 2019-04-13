@@ -1,6 +1,8 @@
 
 # App duplicator for Qlik Sense
 
+[![Build Status](https://travis-ci.com/ptarmiganlabs/butler-app-duplicator.svg?branch=master)](https://travis-ci.com/ptarmiganlabs/butler-app-duplicator)
+
 A microservice for handling back-end tasks related to creating new Sense apps, using existing apps as templates.
 
 ## What's new
