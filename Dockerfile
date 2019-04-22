@@ -1,6 +1,10 @@
 # Use Node 8 LTS
 FROM node:8
 
+# Add some information about the image
+LABEL maintainer="Göran Sander mountaindude@ptarmiganlabs.com"
+LABEL description="Docker image providing app wizard/creation services for Qlik Sense."
+
 # Create app dir inside container
 WORKDIR /nodeapp
 
