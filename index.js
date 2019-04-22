@@ -361,7 +361,7 @@ function respondDuplicateNewScript(req, res, next) {
                         }
                     });
 
-                    logger.verbose(req.query.templateAppId + ': App is template: ' + appIsTemplate);
+                    logger.verbose(`${req.query.templateAppId}: App is template: ${appIsTemplate}`);
 
                     if (!appIsTemplate) {
                         logger.warn('The provided app ID does not belong to a template app');
@@ -588,7 +588,7 @@ function respondDuplicateKeepScript(req, res, next) {
                 }
             });
 
-            logger.verbose(req.query.templateAppId + 'App is template: ' + appIsTemplate);
+            logger.verbose(`${req.query.templateAppId}: App is template: ${appIsTemplate}`);
 
             if (!appIsTemplate) {
                 logger.warn('The provided app ID does not belong to a template app');
