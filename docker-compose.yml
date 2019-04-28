@@ -1,7 +1,7 @@
 version: "3"
 services:
   butler-app-duplicator:
-    image: ptarmiganlabs/butler-app-duplicator:3.0.0
+    image: ptarmiganlabs/butler-app-duplicator:v3.0.0
     restart: always
     container_name: butler-app-duplicator
     ports:
