@@ -300,7 +300,7 @@ function respondGetTemplateList(req, res, next) {
             }, this);
 
             // Sort template apps alphabetically
-            appList.sort(function(a, b) {return a.name > b.name} );
+            appList.sort(function(a, b) {return a.name > b.name;});
 
             logger.info('Done getting list of template apps');
 
