@@ -35,7 +35,7 @@
     "restify-cors-middleware": "^1.1.1",
     "restify-errors": "^7.0.0",
     "winston": "^3.0.0",
-    "winston-daily-rotate-file": "^3.8.0",
+    "winston-daily-rotate-file": "^4.0.0",
     "ws": "^6.2.1"
   },
   "devDependencies": {
