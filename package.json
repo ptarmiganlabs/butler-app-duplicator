@@ -24,23 +24,23 @@
   },
   "homepage": "https://github.com/ptarmiganlabs/butler-app-duplicator#readme",
   "dependencies": {
-    "config": "^3.1.0",
-    "enigma.js": "^2.4.0",
+    "config": "^3.3.0",
+    "enigma.js": "^2.6.3",
     "js-yaml": "^3.13.1",
-    "jshint": "^2.10.2",
+    "jshint": "^2.11.0",
     "json-query": "^2.2.0",
     "qrs-interact": "^4.0.0",
-    "request": "^2.88.0",
-    "restify": "^7.7.0",
+    "request": "^2.88.2",
+    "restify": "^8.5.1",
     "restify-cors-middleware": "^1.1.1",
-    "restify-errors": "^8.0.0",
+    "restify-errors": "^8.0.2",
     "winston": "^3.0.0",
     "winston-daily-rotate-file": "^4.0.0",
-    "ws": "^7.0.0"
+    "ws": "^7.2.1"
   },
   "devDependencies": {
     "chai": "4.2.0",
-    "mocha": "6.2.2",
+    "mocha": "^7.1.0",
     "supertest": "4.0.2"
   }
 }

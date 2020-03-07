@@ -1,5 +1,9 @@
 # Change log
 
+## 3.0.3
+
+Updated dependencies to latest versions, bringing in bug and security fixes.
+
 ## 3.0.2
 
 Move to consistently use Major.Minor.Path versioning scheme for Docker images. No more "v" prefix.  

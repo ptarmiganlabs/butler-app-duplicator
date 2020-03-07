@@ -9,7 +9,8 @@
         "name": "Launch Program",
         "program": "${workspaceFolder}/index.js",
         "env": {
+            "NODE_CONFIG_DIR": "${workspaceFolder}/config",
             "NODE_ENV": "production"
         },
-    }]
+}]
 }
