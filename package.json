@@ -1,6 +1,6 @@
 {
   "name": "template_app_duplicate",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Node.js app for duplicating and customising Qlike Sense apps",
   "main": "index.js",
   "scripts": {
