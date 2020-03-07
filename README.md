@@ -1,7 +1,7 @@
 
 # App duplicator for Qlik Sense
 
-[![Build Status](https://cloud.drone.io/api/badges/ptarmiganlabs/butler/status.svg)](https://cloud.drone.io/ptarmiganlabs/butler)
+[![Build Status](https://cloud.drone.io/api/badges/ptarmiganlabs/butler-app-duplicator/status.svg)](https://cloud.drone.io/ptarmiganlabs/butler-app-duplicator)
 
 A microservice for handling backend tasks related to creating new Sense apps, using existing apps as templates.
 
