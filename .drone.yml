@@ -10,8 +10,8 @@ steps:
     password:
       from_secret: dockerhub_password
     repo: ptarmiganlabs/butler-app-duplicator
-    dockerfile: src/Dockerfile
-    context: src
+    dockerfile: Dockerfile
+    context: 
     # auto_tag: true
     tags:
     - latest
@@ -19,7 +19,3 @@ steps:
   when:
     event:
     - tag
-
-# trigger:
-#   event:
-#   - tag
