@@ -1,5 +1,19 @@
 # Change log
 
+## 3.0.3
+
+Updated dependencies to latest versions, bringing in bug and security fixes.
+
+## 3.0.2
+
+Move to consistently use Major.Minor.Path versioning scheme for Docker images. No more "v" prefix.  
+
+## 3.0.1
+
+Minor update.
+
+* Sort app templates alphabetically. This makes it easier to find the correct template when there are many templates to choose from.
+
 ## 3.0.0
 
 This version is both about updating the tool to work with latest Sense versions, as well as adding several new features:

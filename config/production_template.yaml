@@ -1,4 +1,4 @@
-# Rename this file to default.yaml, and fill in data as needed below.
+# Rename this file to production.yaml, then update it to match your environment.
 
 # Logging configuration
 logLevel: info          # Log level. Possible log levels are silly, debug, verbose, info, warn, error
@@ -21,6 +21,10 @@ httpsEnable: false
 # Paths to ssl certificate and key used to secure the communication to the duplicate server. Can be pem or pvk/cer
 sslCertPath: /path/to/ssl/cert/client.cer
 sslCertKeyPath: /path/to/ssl/cert/client_key.pvk
+
+# If running in a Docker container, the cert path MUST be /nodeapp/config/sslcert. The file name can be anything.
+# sslCertPath: /nodeapp/config/sslcert/client.cer
+# sslCertKeyPath: /nodeapp/config/sslcert/client_key.pvk
 
 # URL where newly created apps' load scripts are retrieved from. Change to something more relevant than the sample code..
 loadScriptURL: https://raw.githubusercontent.com/mountaindude/testdata/master/test-load-script-1.qvs

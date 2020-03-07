@@ -1,7 +1,7 @@
-version: "3"
+version: "3.3"
 services:
   butler-app-duplicator:
-    image: ptarmiganlabs/butler-app-duplicator:3.0.0
+    image: ptarmiganlabs/butler-app-duplicator:3.0.3
     restart: always
     container_name: butler-app-duplicator
     ports:
@@ -13,6 +13,9 @@ services:
       - "NODE_ENV=production"
     logging:
       driver: json-file
+      options:
+        max-file: "5"
+        max-size: "5m"
     networks:
       - butler-app-duplicator
 
@@ -26,6 +29,11 @@ services:
       - "89:80"
     volumes:
       - ./www/src/:/usr/share/nginx/html/
+    logging:
+      driver: json-file
+      options:
+        max-file: "5"
+        max-size: "5m"
     networks:
       - butler-app-duplicator
 
