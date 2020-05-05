@@ -4,7 +4,9 @@
   "description": "Node.js app for duplicating and customising Qlike Sense apps",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/jshint/bin/jshint index.js"
+    "test": "node_modules/jshint/bin/jshint index.js",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "keywords": [
     "butler",
@@ -36,11 +38,13 @@
     "restify-errors": "^8.0.2",
     "winston": "^3.0.0",
     "winston-daily-rotate-file": "^4.0.0",
-    "ws": "^7.2.1"
+    "ws": "^7.2.1",
+    "snyk": "^1.319.0"
   },
   "devDependencies": {
     "chai": "4.2.0",
     "mocha": "7.1.0",
     "supertest": "4.0.2"
-  }
+  },
+  "snyk": true
 }
