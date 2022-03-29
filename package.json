@@ -36,7 +36,7 @@
     "restify-errors": "^8.0.2",
     "winston": "^3.0.0",
     "winston-daily-rotate-file": "^4.0.0",
-    "ws": "^7.4.6"
+    "ws": "^8.0.0"
   },
   "devDependencies": {
     "chai": "4.3.6",
