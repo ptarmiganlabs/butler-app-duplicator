@@ -34,7 +34,7 @@
     "restify": "^8.5.1",
     "restify-cors-middleware": "^1.1.1",
     "restify-errors": "^8.0.2",
-    "winston": "^3.0.0",
+    "winston": "^3.3.0",
     "winston-daily-rotate-file": "^4.0.0",
     "ws": "^8.0.0"
   },
