@@ -31,7 +31,7 @@
     "json-query": "^2.2.0",
     "qrs-interact": "^6.0.0",
     "request": "^2.88.2",
-    "restify": "^8.5.1",
+    "restify": "^9.0.0",
     "restify-cors-middleware": "^1.1.1",
     "restify-errors": "^8.0.2",
     "winston": "^3.0.0",
